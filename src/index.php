@@ -1,4 +1,4 @@
-<?php phpinfo();
+<?php
 
 ?>
 <!DOCTYPE html>
