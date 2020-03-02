@@ -1,0 +1,66 @@
+.main-container {
+  width: 1000px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  margin: 0 auto;
+  background-color: #F8F9FA;
+}
+.main-container h1 {
+  text-align: center;
+}
+.main-container .nav {
+  margin-top: 5px;
+}
+.main-container .nav-item {
+  border-radius: 6px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.main-container .board-topic-container {
+  height: 700px;
+  margin-top: 10px;
+}
+.main-container .board-topic-container .board-topic-elements {
+  height: 50px;
+  width: 800px;
+  margin: 0 auto;
+  margin-top: 5px;
+  background-color: #E3E4E6;
+  border-radius: 5px;
+}
+
+.login-container {
+  margin: 0 auto;
+  margin-top: 50px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  height: 500px;
+  width: 500px;
+  text-align: center;
+}
+.login-container h3 {
+  margin-top: 15px;
+}
+.login-container .form-group {
+  margin-top: 20px;
+  margin-left: 40px;
+}
+
+.register-container {
+  margin: 0 auto;
+  margin-top: 50px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  height: 500px;
+  width: 500px;
+  text-align: center;
+}
+.register-container h3 {
+  margin-top: 15px;
+}
+.register-container .form-group {
+  margin-top: 20px;
+  margin-left: 40px;
+}
+
+/*# sourceMappingURL=style.css.map */
