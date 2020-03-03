@@ -41,7 +41,7 @@
             <h3 class="mb-5">Votre Message</h3>
             <form action="index.php" method="post" class="row">
                 <textarea type="text" class="form-control" placeholder="Message"></textarea>
-                <button type="submit" class="btn btn-primary mt-3">Envoyer</button>
+                <button type="submit" class="btn btn-secondary mt-3">Envoyer</button>
             </form>
         </section>
 
