@@ -64,8 +64,8 @@
                     <p class="text-right">02/03/2020</p>
                 </div>
                 <div class="col-1 d-flex flex-column justify-content-around align-items-center">
-                    <i class="fas fa-edit"></i>
-                    <i class="fas fa-trash-alt"></i>
+                    <a href="#"><i class="fas fa-edit"></i></a>
+                    <a href="#"><i class="fas fa-trash-alt"></i></a>
                 </div>
             </div>
         </section>
