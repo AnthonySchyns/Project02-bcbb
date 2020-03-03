@@ -1,0 +1,24 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.titre {
+  text-align: center;
+}
+
+.center_btn {
+  display: flex;
+  justify-content: center;
+}
+
+#valider {
+  display: block;
+  margin: auto;
+}
+
+.signature {
+  width: 100%;
+}
+
+/*# sourceMappingURL=style.css.map */
