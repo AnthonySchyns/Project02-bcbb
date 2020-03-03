@@ -11,25 +11,25 @@
         <link rel="stylesheet" href="./styles/style.css"/>
         <title>Sing In</title>
     </head>
-    <body>
-        <div class="login-container">
-            <h3>Login</h3>
-            <form>
-                <div class="form-group row">
-                    <label for="email" class="col-sm-2 col-form-label">Email</label>
-                    <div class="col-sm-7">
-                        <input type="email" class="form-control" id="email" value="email@example.com">
-                    </div>
+    <body class="container">
+        <h3 class="text-center mt-5 mb-5">Login</h3>
+        <form>
+            <div class="form-group row justify-content-center">
+                <label for="email" class="col-sm-1 col-form-label">Email</label>
+                <div class="col-sm-4">
+                    <input type="email" class="form-control" id="email" value="email@example.com">
                 </div>
-                <div class="form-group row">
-                    <label for="password" class="col-sm-2 col-form-label">Password</label>
-                    <div class="col-sm-5">
-                        <input type="password" class="form-control" id="password">
-                    </div>
+            </div>
+            <div class="form-group row justify-content-center">
+                <label for="password" class="col-sm-1 col-form-label">Password</label>
+                <div class="col-sm-4">
+                    <input type="password" class="form-control" id="password">
                 </div>
-                <button type="submit" class="btn btn-primary">Login</button>
-            </form>
-        </div>
+            </div>
+            <div class="form-group row justify-content-center ml-2">
+                <button type="submit" class="btn btn-secondary col-sm-3">Login</button>
+            </div>
+        </form>
         <!-- Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

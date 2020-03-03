@@ -11,37 +11,37 @@
         <link rel="stylesheet" href="./styles/style.css"/>
         <title>Sign Up</title>
     </head>
-    <body>
-    <div class="register-container">
-            <h3>Register</h3>
-            <form>
-                <div class="form-group row">
-                    <label for="email" class="col-sm-2 col-form-label">Email</label>
-                    <div class="col-sm-7">
-                        <input type="email" class="form-control" id="email" value="email@example.com">
-                    </div>
+    <body class="container">
+        <h3 class="text-center mt-5 mb-5">Register</h3>
+        <form>
+            <div class="form-group row justify-content-center">
+                <label for="email" class="col-sm-1 col-form-label">Email</label>
+                <div class="col-sm-4">
+                    <input type="email" class="form-control" id="email" value="email@example.com">
                 </div>
-                <div class="form-group row">
-                    <label for="nickname" class="col-sm-2 col-form-label">Nickname</label>
-                    <div class="col-sm-7">
-                        <input type="text" class="form-control" id="nickname">
-                    </div>
+            </div>
+            <div class="form-group row justify-content-center">
+                <label for="nickname" class="col-sm-1 col-form-label">Nickname</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="nickname" value="example55">
                 </div>
-                <div class="form-group row">
-                    <label for="password" class="col-sm-2 col-form-label">Password</label>
-                    <div class="col-sm-7">
-                        <input type="password" class="form-control" id="password">
-                    </div>
+            </div>
+            <div class="form-group row justify-content-center">
+                <label for="password" class="col-sm-1 col-form-label">Password</label>
+                <div class="col-sm-4">
+                    <input type="password" class="form-control" id="password">
                 </div>
-                <div class="form-group row">
-                    <label for="password2" class="col-sm-2 col-form-label">Confirm password</label>
-                    <div class="col-sm-7">
-                        <input type="password" class="form-control" id="password2">
-                    </div>
+            </div>
+            <div class="form-group row justify-content-center">
+                <label for="password2" class="col-sm-1 col-form-label">Confirm password</label>
+                <div class="col-sm-4">
+                    <input type="password" class="form-control" id="password2">
                 </div>
-                <button type="submit" class="btn btn-primary">Register</button>
-            </form>
-        </div>
+            </div>
+            <div class="form-group row justify-content-center ml-2">
+                <button type="submit" class="btn btn-secondary col-sm-3">Register</button>
+            </div>
+        </form>
         <!-- Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

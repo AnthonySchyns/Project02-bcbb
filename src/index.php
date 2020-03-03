@@ -12,16 +12,16 @@
         <title>BCBB</title>
     </head>
     <body>
-        <div class="main-container">
-            <ul class="nav justify-content-end">
-                <li class="nav-item bg-secondary">
-                    <a class="nav-link text-white" href="register.php">Sign up</a>
-                </li>
-                <li class="nav-item bg-secondary">
-                    <a class="nav-link text-white" href="login.php">Sign in</a>
-                </li>
-            </ul>
-            <h1>BCBB</h1>
+        <ul class="nav justify-content-end">
+            <li class="nav-item bg-secondary">
+                <a class="nav-link text-white" href="register.php">Sign Up</a>
+            </li>
+            <li class="nav-item bg-secondary">
+                <a class="nav-link text-white" href="login.php">Sign in</a>
+            </li>
+        </ul>
+        <div class="container">
+            <h1 class="text-center">BCBB</h1>
             <ul class="nav nav-justified">
                 <li class="nav-item bg-secondary">
                     <a class="nav-link text-white" href="">General</a>
@@ -36,8 +36,8 @@
                     <a class="nav-link text-white" href="">Events</a>
                 </li>
             </ul>
-            <div class="board-topic-container">
-                <div class="board-topic-elements"></div>
+            <div class="container">
+                <p></p>
             </div>
         </div>
         <!-- Bootstrap JS -->
