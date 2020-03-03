@@ -5,6 +5,10 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <!-- Fontawesome  -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"
+            integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous" />
+
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -34,15 +38,17 @@
             </div>
         </section>
         <section class="container mt-5">
+            <h3 class="mb-5">Votre Message</h3>
             <form action="index.php" method="post" class="row">
-                <textarea type="text" class="form-control"></textarea>
+                <textarea type="text" class="form-control" placeholder="Message"></textarea>
                 <button type="submit" class="btn btn-primary mt-3">Envoyer</button>
             </form>
         </section>
 
         <section class="container mt-5">
+            <h3 class="mb-5">Messages</h3>
             <div class="row border">
-                <div class="col-md-2 border-right p-5">
+                <div class="col-md-2 border-right p-5 align-middle">
                     <img src="img/profil-test.webp" alt="image user" class="img-thumbnail">
                     <p class="text-center mt-4 font-weight-bold">User Name</p>
                 </div>
@@ -57,8 +63,16 @@
                         nulla, eveniet libero cumque modi doloribus.</p>
                     <p class="text-right">02/03/2020</p>
                 </div>
+                <div class="col-1 d-flex flex-column justify-content-around align-items-center">
+                    <i class="fas fa-edit"></i>
+                    <i class="fas fa-trash-alt"></i>
+                </div>
             </div>
         </section>
+
+        <footer>
+            <h1>&nbsp;</h1>
+        </footer>
 
         <!-- Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
