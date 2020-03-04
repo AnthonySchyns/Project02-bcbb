@@ -1,5 +1,7 @@
 <?php
     require_once('connexion.php');
+    session_start();
+    $board .= $_SERVER['REQUEST_URI'];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -23,59 +25,104 @@
             <h1 class="text-center">BCBB</h1>
             <ul class="nav nav-justified">
                 <li class="nav-item bg-secondary">
-                    <a class="nav-link text-white" href="index.php?board=general">General</a>
+                    <?php
+                        if($board == "/index.php?board=General" OR $board == "/"){
+                            echo '<a class="nav-link text-white bg-dark" href="index.php?board=General">General</a>';
+                        } else {
+                            echo '<a class="nav-link text-white bg-secondary" href="index.php?board=General">General</a>';
+                        }
+                    ?>
                 </li>
-                <li class="nav-item bg-secondary">
-                    <a class="nav-link text-white" href="index.php?board=development">Development</a>
+                <li class="nav-item">
+                    <?php
+                        if($board == "/index.php?board=Development"){
+                            echo '<a class="nav-link text-white bg-dark" href="index.php?board=Development">Development</a>';
+                        } else {
+                            echo '<a class="nav-link text-white bg-secondary" href="index.php?board=Development">Development</a>';
+                        }
+                    ?>                
                 </li>
-                <li class="nav-item bg-secondary">
-                    <a class="nav-link text-white" href="index.php?board=smalltalk">Smalltalk</a>
+                <li class="nav-item">
+                    <?php
+                        if($board == "/index.php?board=Smalltalk"){
+                            echo '<a class="nav-link text-white bg-dark" href="index.php?board=Smalltalk">Smalltalk</a>';
+                        } else {
+                            echo '<a class="nav-link text-white bg-secondary" href="index.php?board=Smalltalk">Smalltalk</a>';
+                        }
+                    ?>                
                 </li>
-                <li class="nav-item bg-secondary">
-                    <a class="nav-link text-white" href="index.php?board=events">Events</a>
+                <li class="nav-item">
+                    <?php
+                        if($board == "/index.php?board=Events"){
+                            echo '<a class="nav-link text-white bg-dark" href="index.php?board=Events">Events</a>';
+                        } else {
+                            echo '<a class="nav-link text-white bg-secondary" href="index.php?board=Events">Events</a>';
+                        }
+                    ?>                
                 </li>
             </ul>
             <?php
                 switch ($_GET['board']) {
-                    case 'general':
-                        $sql = $pdo->query("SELECT *, DATE_FORMAT(created_at,'%d/%m/%Y') FROM topics WHERE boards_id = 1 ORDER BY created_at DESC");
+                    case 'General':
+                        $sql = $pdo->query("SELECT * 
+                                            FROM topics 
+                                            INNER JOIN users 
+                                            ON users.id = topics.users_id 
+                                            WHERE boards_id = 1 
+                                            ORDER BY created_at DESC");
                         echo '<div class="list-group">';
                         while($reponse = $sql->fetch()){
-                            echo '<a href="#" class="list-group-item list-group-item-action list-group-item-secondary">' . $reponse['title'] . '    ' . $reponse['created_at'] . $reponse['nickname'] . '</a>';
+                            echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
+                            echo '<div class="row row-cols-2">';
+                            echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
+                            echo '<div class="col">' . $reponse['created_at'] . '</div>';
+                            echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
+                            echo '</div>';
+                            echo '</a>';
                         }
                         echo '</div>';
                         break;
-                    case 'development':
-                        $sql = $pdo->query("SELECT * FROM topics WHERE boards_id = 2 ORDER BY created_at DESC");
+                    case 'Smalltalk':
+                        $sql = $pdo->query("SELECT * FROM topics INNER JOIN users ON users.id = topics.users_id WHERE boards_id = 3 ORDER BY created_at DESC");
                         echo '<div class="list-group">';
                         while($reponse = $sql->fetch()){
-                            echo '<a href="#" class="list-group-item list-group-item-action list-group-item-secondary">' . $reponse['title'] . '</a>';
+                            echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
+                            echo '<div class="row row-cols-2">';
+                            echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
+                            echo '<div class="col">' . $reponse['created_at'] . '</div>';
+                            echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
+                            echo '</div>';
+                            echo '</a>';
                         }
                         echo '</div>';
                         break;
-                    case 'smalltalk':
-                        $sql = $pdo->query("SELECT * FROM topics WHERE boards_id = 3 ORDER BY created_at DESC");
+                    case 'Events':
+                        $sql = $pdo->query("SELECT * FROM topics INNER JOIN users ON users.id = topics.users_id WHERE boards_id = 4 ORDER BY created_at DESC");
                         echo '<div class="list-group">';
                         while($reponse = $sql->fetch()){
-                            echo '<a href="#" class="list-group-item list-group-item-action list-group-item-secondary">' . $reponse['title'] . '</a>';
-                        }
-                        echo '</div>';
-                        break;
-                    case 'events':
-                        $sql = $pdo->query("SELECT * FROM topics WHERE boards_id = 4 ORDER BY created_at DESC");
-                        echo '<div class="list-group">';
-                        while($reponse = $sql->fetch()){
-                            echo '<a href="#" class="list-group-item list-group-item-action list-group-item-secondary">' . $reponse['title'] . '</a>';
+                            echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
+                            echo '<div class="row row-cols-2">';
+                            echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
+                            echo '<div class="col">' . $reponse['created_at'] . '</div>';
+                            echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
+                            echo '</div>';
+                            echo '</a>';
                         }
                         echo '</div>';
                         break;
                     default:
-                        $sql = $pdo->query("SELECT * FROM topics WHERE boards_id = 1 ORDER BY created_at DESC");
+                        $sql = $pdo->query("SELECT * FROM topics INNER JOIN users ON users.id = topics.users_id WHERE boards_id = 1 ORDER BY created_at DESC");
                         echo '<div class="list-group">';
                         while($reponse = $sql->fetch()){
-                            echo '<a href="#" class="list-group-item list-group-item-action list-group-item-secondary">' . $reponse['title'] . '</a>';
+                            echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
+                            echo '<div class="row row-cols-2">';
+                            echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
+                            echo '<div class="col">' . $reponse['created_at'] . '</div>';
+                            echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
+                            echo '</div>';
+                            echo '</a>';
                         }
-                        echo '</div>';
+                            echo '</div>';
                 }
             ?>
         </div>
