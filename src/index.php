@@ -14,11 +14,23 @@
     </head>
     <body>
         <ul class="nav justify-content-end">
-            <li class="nav-item bg-secondary">
-                <a class="nav-link text-white" href="register.php">Sign Up</a>
+            <li class="nav-item">
+                <?php
+                    if($board == "register.php"){
+                        echo '<a class="nav-link text-white bg-dark" href="register.php">Sign Up</a>';
+                    } else {
+                        echo '<a class="nav-link text-white bg-secondary" href="register.php">Sign Up</a>';
+                    }
+                ?>
             </li>
-            <li class="nav-item bg-secondary">
-                <a class="nav-link text-white" href="login.php">Sign in</a>
+            <li class="nav-item">
+                <?php
+                    if($board == "login.php"){
+                        echo '<a class="nav-link text-white bg-dark" href="login.php">Sign In</a>';
+                    } else {
+                        echo '<a class="nav-link text-white bg-secondary" href="login.php">Sign In</a>';
+                    }
+                ?>
             </li>
         </ul>
         <div class="container">
@@ -82,8 +94,32 @@
                         }
                         echo '</div>';
                         break;
+                    case 'Development':
+                        $sql = $pdo->query("SELECT * 
+                                            FROM topics 
+                                            INNER JOIN users 
+                                            ON users.id = topics.users_id 
+                                            WHERE boards_id = 2 
+                                            ORDER BY created_at DESC");
+                        echo '<div class="list-group">';
+                        while($reponse = $sql->fetch()){
+                            echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
+                            echo '<div class="row row-cols-2">';
+                            echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
+                            echo '<div class="col">' . $reponse['created_at'] . '</div>';
+                            echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
+                            echo '</div>';
+                            echo '</a>';
+                        }
+                        echo '</div>';
+                        break;
                     case 'Smalltalk':
-                        $sql = $pdo->query("SELECT * FROM topics INNER JOIN users ON users.id = topics.users_id WHERE boards_id = 3 ORDER BY created_at DESC");
+                        $sql = $pdo->query("SELECT * 
+                                            FROM topics 
+                                            INNER JOIN users 
+                                            ON users.id = topics.users_id 
+                                            WHERE boards_id = 3 
+                                            ORDER BY created_at DESC");
                         echo '<div class="list-group">';
                         while($reponse = $sql->fetch()){
                             echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
@@ -97,7 +133,12 @@
                         echo '</div>';
                         break;
                     case 'Events':
-                        $sql = $pdo->query("SELECT * FROM topics INNER JOIN users ON users.id = topics.users_id WHERE boards_id = 4 ORDER BY created_at DESC");
+                        $sql = $pdo->query("SELECT * 
+                                            FROM topics 
+                                            INNER JOIN users 
+                                            ON users.id = topics.users_id 
+                                            WHERE boards_id = 4 
+                                            ORDER BY created_at DESC");
                         echo '<div class="list-group">';
                         while($reponse = $sql->fetch()){
                             echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
@@ -111,7 +152,12 @@
                         echo '</div>';
                         break;
                     default:
-                        $sql = $pdo->query("SELECT * FROM topics INNER JOIN users ON users.id = topics.users_id WHERE boards_id = 1 ORDER BY created_at DESC");
+                        $sql = $pdo->query("SELECT * 
+                                            FROM topics 
+                                            INNER JOIN users 
+                                            ON users.id = topics.users_id 
+                                            WHERE boards_id = 1 
+                                            ORDER BY created_at DESC");
                         echo '<div class="list-group">';
                         while($reponse = $sql->fetch()){
                             echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
