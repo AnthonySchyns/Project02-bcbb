@@ -10,6 +10,7 @@ require_once 'connexion.php';
 
 // Add Message
 if (isset($_POST['addTopic'])) {
+    var_dump($_POST['title']);
     $title = $_POST['title'];
     $content = $_POST['content'];
     $idBoards = $_POST['idBoards'];
@@ -24,7 +25,7 @@ if (isset($_POST['addTopic'])) {
         . "users_id = '$idUser' ";
 
     $pdo->exec($sqlAjout);
-    header("Location: index.php");
+    header("Location: /index.php");
 }
 
 // Get Boards
