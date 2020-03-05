@@ -1,6 +1,10 @@
 <?php
 
+session_start();
+
 require_once 'connexion.php';
+
+$path = $_GET['idTopic'];
 
 // Gravatar
 function get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array())
@@ -50,7 +54,7 @@ if (isset($_POST['sendUpdate'])) {
 }
 
 // Get Topics
-$idTopic = $_GET['idTopic'] = 1;
+$idTopic = $_GET['idTopic'];
 $sql = "SELECT * "
     . "FROM topics "
     . "INNER JOIN users "
@@ -68,7 +72,7 @@ $idTopic = $topic->id;
 if (isset($_POST['addMessage'])) {
     $content = $_POST['content'];
     $dateTime = date("Y-m-d H:i:s");
-    $user = 1;
+    $user = $_SESSION["idUser"];
 
     $sqlAjout = "INSERT INTO messages "
         . "SET content = '$content', "
@@ -112,6 +116,14 @@ $sth = null;
     </head>
 
     <body>
+        <ul class="nav justify-content-end">
+            <li class="nav-item bg-secondary">
+                <a class="nav-link text-white" href="register.php">Sign Up</a>
+            </li>
+            <li class="nav-item bg-secondary">
+                <a class="nav-link text-white" href="login.php">Sign in</a>
+            </li>
+        </ul>
         <h1 class="text-center mt-5"><?php echo $topic->title ?></h1>
         <section class="container mt-5">
             <div class="row border">
@@ -128,7 +140,7 @@ $sth = null;
 
         <section class="container mt-5">
             <h3 class="mb-5">Votre Message</h3>
-            <form action="topic.php" method="post" class="row">
+            <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row">
                 <textarea type="text" class="form-control" name="content" placeholder="Message"></textarea>
                 <button type="submit" name="addMessage" class="btn btn-secondary mt-3">Envoyer</button>
             </form>
@@ -148,7 +160,7 @@ $sth = null;
 
             <?php if ($message->deleted_at == null) {?>
                 <?php if ($_POST['update'] == $message->id) {?>
-                    <form action="topic.php" method="post">
+                    <form action="topic.php?idTopic=<?php echo $path ?>" method="post">
                         <textarea type="text" class="form-control" name="content"><?php echo $message->content ?></textarea>
                         <button type="submit" name="sendUpdate" value="<?php echo $message->id ?>" class="btn btn-secondary mt-3">Modifier</button>
                     </form>
@@ -165,10 +177,10 @@ $sth = null;
 
             <?php if ($message->deleted_at == null) {?>
                 <?php if (empty($_POST['update'])) {?>
-                    <form action="topic.php" method="post">
+                    <form action="topic.php?idTopic=<?php echo $path ?>" method="post">
                             <button type="submit" name="update" value="<?php echo $message->id ?>" class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
                     </form>
-                    <form action="topic.php" method="post">
+                    <form action="topic.php?idTopic=<?php echo $path ?>" method="post">
                         <button type="submit" name="del" value="<?php echo $message->id ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
                     </form>
                 <?php }?>

@@ -1,63 +1,65 @@
-<?php 
+<?php
 require "connexion.php";
 session_start();
 $sql = "SELECT * "
-      . "FROM users "
-      . "WHERE id = 1";
+    . "FROM users "
+    . "WHERE id = 1";
 $sth = $pdo->prepare($sql);
 $sth->execute();
 $useru = $sth->fetch(PDO::FETCH_OBJ);
 $sth->closeCursor();
-$sth= null;
-$email = $user->email;
-if(isset($_POST['submit'])){
-  $nickname = trim($_POST['new_nickname']);
-  $password = trim($_POST['new_password']);
-  $password2 = trim($_POST['confirmer']);
-  $signature = trim($_POST['signature']);
-  // Erreurs
-  $errors = array();
-  if ($password != $password2) {
-	array_push($errors, "Modification annulée : les deux mots de passe ne correspondaient pas");
-  }
-  $sql = "SELECT * "
-        ." FROM users WHERE id != 1";
-$sth = $pdo->prepare($sql);
-$sth->execute();
-$users = $sth->fetchAll(PDO::FETCH_OBJ);
-$sth->closeCursor();
 $sth = null;
-  foreach ($users as $user) {
-        if($nickname === $user->nickname)
-        {
+$email = $user->email;
+if (isset($_POST['submit'])) {
+    $nickname = trim($_POST['new_nickname']);
+    $password = trim($_POST['new_password']);
+    $password2 = trim($_POST['confirmer']);
+    $signature = trim($_POST['signature']);
+    // Erreurs
+    $errors = array();
+    if ($password != $password2) {
+        array_push($errors, "Modification annulée : les deux mots de passe ne correspondaient pas");
+    }
+    $sql = "SELECT * "
+        . " FROM users WHERE id != 1";
+    $sth = $pdo->prepare($sql);
+    $sth->execute();
+    $users = $sth->fetchAll(PDO::FETCH_OBJ);
+    $sth->closeCursor();
+    $sth = null;
+    foreach ($users as $user) {
+        if ($nickname === $user->nickname) {
             array_push($errors, "Modification annulée : pseudo déjà existant");
         }
-      }
+    }
 // Fin erreurs
-      if(count($errors) == 0) {
+    if (count($errors) == 0) {
         $update = "UPDATE users "
-                . "SET `nickname`='".$nickname."', `password`='".$password."', `signature`='".$signature."' "
-                . "WHERE id = 1";
+            . "SET `nickname`='" . $nickname . "', `password`='" . $password . "', `signature`='" . $signature . "' "
+            . "WHERE id = 1";
         $sth = $pdo->prepare($update);
         $sth->execute();
         $sth->closeCursor();
-        $sth = NULL;
-      }
-  
+        $sth = null;
+    }
+
 }
-function get_gravatar( $email, $s = 80, $d = 'mp', $r = 'g', $img = false, $atts = array() ) {
+function get_gravatar($email, $s = 80, $d = 'mp', $r = 'g', $img = false, $atts = array())
+{
     $url = 'https://www.gravatar.com/avatar/';
-    $url .= md5( strtolower( trim( $email ) ) );
+    $url .= md5(strtolower(trim($email)));
     $url .= "?s=$s&d=$d&r=$r";
-    if ( $img ) {
+    if ($img) {
         $url = '<img src="' . $url . '"';
-        foreach ( $atts as $key => $val )
+        foreach ($atts as $key => $val) {
             $url .= ' ' . $key . '="' . $val . '"';
+        }
+
         $url .= ' />';
     }
     return $url;
 }
-$src = get_gravatar( $email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array() );   
+$src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array());
 
 ?>
 <!DOCTYPE html>
@@ -80,7 +82,7 @@ $src = get_gravatar( $email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts 
     <div class="bg-light rounded border border-light container">
       <form action="http://localhost/profile.php" method="post">
       <div class="d-flex justify-content-center mt-4">
-      <img src="<?php echo $src?>" class="rounded-circle"/>
+      <img src="<?php echo $src ?>" class="rounded-circle"/>
       </div>
         <div class="form-group d-flex justify-content-center mt-3 pt-4">
           <a
@@ -166,16 +168,22 @@ $src = get_gravatar( $email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts 
             class="btn btn-secondary justify-content-center"
           />
         </div>
-        <?php  if (count($errors) > 0) : ?>
-                            <?php foreach ($errors as $error) : ?>
+        <?php if (count($errors) > 0): ?>
+                            <?php foreach ($errors as $error): ?>
                                 <p class="error text-center font-weight-bold text-danger mt-O" style="font-size:10px">
                                     <?php
-                                        if($error === "Modification annulée : les deux mots de passe ne correspondaient pas")echo $error;
-                                        if($error === "Modification annulée : pseudo déjà existant")echo $error;
-                                    ?>
+if ($error === "Modification annulée : les deux mots de passe ne correspondaient pas") {
+    echo $error;
+}
+
+if ($error === "Modification annulée : pseudo déjà existant") {
+    echo $error;
+}
+
+?>
                                 </p>
-                            <?php endforeach ?>
-                        <?php  endif ?>
+                            <?php endforeach?>
+                        <?php endif?>
       </form>
     </div>
     <!-- Bootstrap JS -->
