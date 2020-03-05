@@ -1,3 +1,67 @@
+<?php
+require "connexion.php";
+session_start();
+$sql = "SELECT * "
+    . "FROM users "
+    . "WHERE id = 1";
+$sth = $pdo->prepare($sql);
+$sth->execute();
+$useru = $sth->fetch(PDO::FETCH_OBJ);
+$sth->closeCursor();
+$sth = null;
+$email = $user->email;
+if (isset($_POST['submit'])) {
+    $nickname = trim($_POST['new_nickname']);
+    $password = trim($_POST['new_password']);
+    $password2 = trim($_POST['confirmer']);
+    $signature = trim($_POST['signature']);
+    // Erreurs
+    $errors = array();
+    if ($password != $password2) {
+        array_push($errors, "Modification annulée : les deux mots de passe ne correspondaient pas");
+    }
+    $sql = "SELECT * "
+        . " FROM users WHERE id != 1";
+    $sth = $pdo->prepare($sql);
+    $sth->execute();
+    $users = $sth->fetchAll(PDO::FETCH_OBJ);
+    $sth->closeCursor();
+    $sth = null;
+    foreach ($users as $user) {
+        if ($nickname === $user->nickname) {
+            array_push($errors, "Modification annulée : pseudo déjà existant");
+        }
+    }
+// Fin erreurs
+    if (count($errors) == 0) {
+        $update = "UPDATE users "
+            . "SET `nickname`='" . $nickname . "', `password`='" . $password . "', `signature`='" . $signature . "' "
+            . "WHERE id = 1";
+        $sth = $pdo->prepare($update);
+        $sth->execute();
+        $sth->closeCursor();
+        $sth = null;
+    }
+
+}
+function get_gravatar($email, $s = 80, $d = 'mp', $r = 'g', $img = false, $atts = array())
+{
+    $url = 'https://www.gravatar.com/avatar/';
+    $url .= md5(strtolower(trim($email)));
+    $url .= "?s=$s&d=$d&r=$r";
+    if ($img) {
+        $url = '<img src="' . $url . '"';
+        foreach ($atts as $key => $val) {
+            $url .= ' ' . $key . '="' . $val . '"';
+        }
+
+        $url .= ' />';
+    }
+    return $url;
+}
+$src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array());
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
   <head>
@@ -16,7 +80,10 @@
   <body class="bg-white p-0 m-0">
     <h1 class="titre text-center">Profile</h1>
     <div class="bg-light rounded border border-light container">
-      <form action="" method="post">
+      <form action="http://localhost/profile.php" method="post">
+      <div class="d-flex justify-content-center mt-4">
+      <img src="<?php echo $src ?>" class="rounded-circle"/>
+      </div>
         <div class="form-group d-flex justify-content-center mt-3 pt-4">
           <a
             href="https://fr.gravatar.com/emails/"
@@ -34,20 +101,20 @@
               class="form-control-plaintext"
               name="new_email"
               id="new_email"
-              value="example@mail.com"
+              value="<?php echo $user->email ?>"
             />
           </div>
         </div>
         <div class="form-group row mt-5">
           <label for="new_nickname" class="col-sm-2 col-form-label"
-            >Pseudo :</label
-          >
+            >Pseudo :</label>
           <div class="col-sm-10">
             <input
               type="text"
               name="new_nickname"
               id="new_nickname"
               class="form-control"
+              value="<?php echo $useru->nickname ?>"
               required
             />
           </div>
@@ -62,6 +129,7 @@
               name="new_password"
               id="new_password"
               class="form-control"
+              value="<?php echo $user->password ?>"
               required
             />
           </div>
@@ -74,19 +142,19 @@
             <input
               type="password"
               name="confirmer"
-              id="new_password"
+              id="confirmer"
               class="form-control"
+              value="<?php echo $useru->password ?>"
               required
             />
           </div>
         </div>
         <div class="form-group row mt-5">
           <label for="signature" class="col-sm-2 col-form-label"
-            >Signature :</label
-          >
+            >Signature :</label>
           <div class="col-sm-10">
-            <textarea style="width:100%" id="signature">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            <textarea style="width:100%" id="signature" name="signature">
+            <?php echo $useru->signature ?>
         </textarea
             >
           </div>
@@ -94,14 +162,30 @@
         <div class="form-group mt-5 pb-3 d-flex justify-content-center">
           <input
             type="submit"
+            name="submit"
             value="Valider"
             id="valider"
             class="btn btn-secondary justify-content-center"
           />
         </div>
+        <?php if (count($errors) > 0): ?>
+                            <?php foreach ($errors as $error): ?>
+                                <p class="error text-center font-weight-bold text-danger mt-O" style="font-size:10px">
+                                    <?php
+if ($error === "Modification annulée : les deux mots de passe ne correspondaient pas") {
+    echo $error;
+}
+
+if ($error === "Modification annulée : pseudo déjà existant") {
+    echo $error;
+}
+
+?>
+                                </p>
+                            <?php endforeach?>
+                        <?php endif?>
       </form>
     </div>
-
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -119,4 +203,4 @@
       crossorigin="anonymous"
     ></script>
   </body>
-</html>
+  </html>
