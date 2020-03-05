@@ -3,7 +3,8 @@
 require_once 'connexion.php';
 
 session_start();
-
+$errors = array();
+if (isset($_POST['submit'])) {
 $email = $_POST['email'];
 $password = $_POST['password'];
 
@@ -13,16 +14,22 @@ $sql = "SELECT * "
 $sth = $pdo->prepare($sql);
 $sth->execute();
 $userCo = $sth->fetch(PDO::FETCH_OBJ);
-if($userCo){
-    $isValid = password_verify($password, $userCo->password);
-    if($isValid == $userCo->password){
+$isValid = password_verify($password, $userCo->password);
+if(empty($email)) {array_push($errors, "Email requis");}
+if(empty($password)) {array_push($errors, "Mot de passe requis");}
+if($email != $userCo->email or $isValid == false)
+{
+    array_push($errors, "L'email ou le mot de passe saisi est incorrect");
+}
+if($email == $userCo->email){
+    if($isValid){
         $_SESSION["idUser"] = $userCo->id;
-        header("Location: topic.php?idTopic=1");
+        header("Location: index.php");
     }
 }
 $sth->closeCursor();
 $sth = null;
-
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -39,19 +46,46 @@ $sth = null;
         <h3 class="text-center mt-5 mb-5">Login</h3>
         <form action="login.php" method="post">
             <div class="form-group row justify-content-center">
-                <label for="email" class="col-sm-1 col-form-label">Email</label>
-                <div class="col-sm-4">
+                <div class="col-sm-5">
+                    <label for="email">
+                        Email
+                        <?php if (count($errors) > 0) :?>
+                        <?php foreach ($errors as $error) :?>
+                            <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
+                                <?php if($error === "Email requis")echo $error?>
+                            </span>
+                        <?php endforeach?>
+                    <?php endif?>
+                    </label>
                     <input type="email" class="form-control" name="email" id="email" placeholder="email@example.com">
                 </div>
             </div>
             <div class="form-group row justify-content-center">
-                <label for="password" class="col-sm-1 col-form-label">Password</label>
-                <div class="col-sm-4">
+                <div class="col-sm-5">
+                    <label for="password">
+                        Password
+                        <?php if (count($errors) > 0) :?>
+                        <?php foreach ($errors as $error) :?>
+                            <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
+                                <?php if($error === "Mot de passe requis")echo $error?>
+                            </span>
+                        <?php endforeach?>
+                    <?php endif?>
+                    </label>
                     <input type="password" class="form-control" name="password" id="password">
                 </div>
             </div>
             <div class="form-group row justify-content-center ml-2">
-                <button type="submit" class="btn btn-secondary col-sm-3">Login</button>
+                <button type="submit" name="submit" class="btn btn-secondary col-sm-3">Login</button>
+            </div>
+            <div class="text-center">
+            <?php if (count($errors) > 0) :?>
+                <?php foreach ($errors as $error) :?>
+                    <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
+                        <?php if($error === "L'email ou le mot de passe saisi est incorrect")echo $error?>
+                    </span>
+                <?php endforeach?>
+            <?php endif?>
             </div>
         </form>
 

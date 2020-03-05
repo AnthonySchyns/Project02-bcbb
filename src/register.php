@@ -61,7 +61,7 @@ if (isset($_POST['submit'])) {
     </head>
     <body class="container">
         <h3 class="text-center mt-5 mb-5">Register</h3>
-        <form action="http://localhost/register.php" method="post">
+        <form action="register.php" method="post">
             <div class="form-group row justify-content-center">
                 <div class="col-sm-5">
                 <label for="email">
