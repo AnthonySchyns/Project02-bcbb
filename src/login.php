@@ -36,6 +36,9 @@ $sth = null;
         <title>Sign In</title>
     </head>
     <body class="container">
+        <?php
+            include 'menu.php';
+        ?>
         <h3 class="text-center mt-5 mb-5">Login</h3>
         <form action="login.php" method="post">
             <div class="form-group row justify-content-center">
