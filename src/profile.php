@@ -1,6 +1,11 @@
 <?php
 require "connexion.php";
 session_start();
+
+if (!isset($_SESSION['idUser'])) {
+  header('location: index.php');
+}
+
 $errors = array();
 if (isset($_POST['submit'])) {
     $nickname = trim($_POST['new_nickname']);
@@ -87,6 +92,9 @@ $src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts =
     <title>Profile</title>
   </head>
   <body class="bg-white p-0 m-0">
+    <?php
+      include 'menu.php';
+    ?>
     <h1 class="titre text-center">Profile</h1>
     <div class="bg-light rounded border border-light container">
       <form action="profile.php" method="post">

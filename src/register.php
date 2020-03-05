@@ -59,7 +59,11 @@ if (isset($_POST['submit'])) {
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <title>Sign Up</title>
     </head>
-    <body class="container">
+    <body>
+        <?php
+            include 'menu.php';
+        ?>
+        <div class="container">
         <h3 class="text-center mt-5 mb-5">Register</h3>
         <form action="register.php" method="post">
             <div class="form-group row justify-content-center">
@@ -94,7 +98,7 @@ if ($error === "L'email existe déjà") {
                     <label for="nickname">
                         Pseudo
                         <!-- Affichange erreur pseudo requis-->
-                     
+                    
                         <?php if (count($errors) > 0): ?>
                             <?php foreach ($errors as $error): ?>
                                 <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
@@ -169,6 +173,7 @@ if ($error === "Les deux mots de passe ne correspondent pas") {
                 <button id="submit" type="submit" class="btn btn-secondary" name="submit">Register</button>
             </div>
         </form>
+        </div>
         <!-- Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

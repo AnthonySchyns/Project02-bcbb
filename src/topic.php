@@ -114,14 +114,9 @@ $sth = null;
     </head>
 
     <body>
-        <ul class="nav justify-content-end">
-            <li class="nav-item bg-secondary">
-                <a class="nav-link text-white" href="register.php">Sign Up</a>
-            </li>
-            <li class="nav-item bg-secondary">
-                <a class="nav-link text-white" href="login.php">Sign in</a>
-            </li>
-        </ul>
+        <?php
+            include 'menu.php';
+        ?>
         <h1 class="text-center mt-5"><?php echo $topic->title ?></h1>
         <section class="container mt-5">
             <div class="row border">
@@ -136,6 +131,8 @@ $sth = null;
             </div>
         </section>
 
+    <?php if (isset($_SESSION['idUser'])) { ?>
+
         <section class="container mt-5">
             <h3 class="mb-5">Votre Message</h3>
             <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row">
@@ -143,6 +140,8 @@ $sth = null;
                 <button type="submit" name="addMessage" class="btn btn-secondary mt-3">Envoyer</button>
             </form>
         </section>
+
+    <?php } ?>   
 
         <section class="container mt-5">
             <h3 class="mb-5">Messages</h3>
@@ -173,6 +172,7 @@ $sth = null;
                 </div>
                 <div class="col-1 d-flex flex-column justify-content-around align-items-center">
 
+        <?php if (isset($_SESSION['idUser'])) { ?>
             <?php if ($message->deleted_at == null) {?>
                 <?php if (empty($_POST['update'])) {?>
                     <form action="topic.php?idTopic=<?php echo $path ?>" method="post">
@@ -183,6 +183,7 @@ $sth = null;
                     </form>
                 <?php }?>
             <?php }?>
+        <?php }?>
 
                 </div>
             </div>
