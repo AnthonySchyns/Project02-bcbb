@@ -1,27 +1,18 @@
 <?php
 require "connexion.php";
 session_start();
-$sql = "SELECT * "
-    . "FROM users "
-    . "WHERE id = 1";
-$sth = $pdo->prepare($sql);
-$sth->execute();
-$useru = $sth->fetch(PDO::FETCH_OBJ);
-$sth->closeCursor();
-$sth = null;
-$email = $user->email;
+$errors = array();
 if (isset($_POST['submit'])) {
     $nickname = trim($_POST['new_nickname']);
     $password = trim($_POST['new_password']);
     $password2 = trim($_POST['confirmer']);
     $signature = trim($_POST['signature']);
     // Erreurs
-    $errors = array();
     if ($password != $password2) {
         array_push($errors, "Modification annulée : les deux mots de passe ne correspondaient pas");
     }
     $sql = "SELECT * "
-        . " FROM users WHERE id != 1";
+        . " FROM users WHERE id != '".$_SESSION['idUser']."'";
     $sth = $pdo->prepare($sql);
     $sth->execute();
     $users = $sth->fetchAll(PDO::FETCH_OBJ);
@@ -34,9 +25,17 @@ if (isset($_POST['submit'])) {
     }
 // Fin erreurs
     if (count($errors) == 0) {
+      $hash = password_hash($password, PASSWORD_DEFAULT);
+      if (empty($password)) {
         $update = "UPDATE users "
-            . "SET `nickname`='" . $nickname . "', `password`='" . $password . "', `signature`='" . $signature . "' "
-            . "WHERE id = 1";
+            . "SET `nickname`='" . $nickname . "', `signature`='" . $signature . "' "
+            . "WHERE id = '".$_SESSION['idUser']."'";
+      }
+      else {
+        $update = "UPDATE users "
+            . "SET `nickname`='" . $nickname . "', `password`='" . $hash . "', `signature`='" . $signature . "' "
+            . "WHERE id = '".$_SESSION['idUser']."'";
+      }
         $sth = $pdo->prepare($update);
         $sth->execute();
         $sth->closeCursor();
@@ -44,6 +43,16 @@ if (isset($_POST['submit'])) {
     }
 
 }
+$sql = "SELECT * "
+    . "FROM users "
+    . "WHERE id = '".$_SESSION['idUser']."'";
+$sth = $pdo->prepare($sql);
+$sth->execute();
+$useru = $sth->fetch(PDO::FETCH_OBJ);
+$sth->closeCursor();
+$sth = null;
+$email = $useru->email;
+
 function get_gravatar($email, $s = 80, $d = 'mp', $r = 'g', $img = false, $atts = array())
 {
     $url = 'https://www.gravatar.com/avatar/';
@@ -129,8 +138,7 @@ $src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts =
               name="new_password"
               id="new_password"
               class="form-control"
-              value="<?php echo $user->password ?>"
-              required
+              value=""
             />
           </div>
         </div>
@@ -144,8 +152,7 @@ $src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts =
               name="confirmer"
               id="confirmer"
               class="form-control"
-              value="<?php echo $useru->password ?>"
-              required
+              value=""
             />
           </div>
         </div>
@@ -153,7 +160,7 @@ $src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts =
           <label for="signature" class="col-sm-2 col-form-label"
             >Signature :</label>
           <div class="col-sm-10">
-            <textarea style="width:100%" id="signature" name="signature">
+            <textarea class="border border-gray" style="width:100%" id="signature" name="signature">
             <?php echo $useru->signature ?>
         </textarea
             >
