@@ -77,8 +77,8 @@
                 switch ($_GET['board']) {
                     case 'General':
                         $sql = $pdo->query("SELECT * 
-                                            FROM topics 
-                                            INNER JOIN users 
+                                            FROM users 
+                                            INNER JOIN topics 
                                             ON users.id = topics.users_id 
                                             WHERE boards_id = 1 
                                             ORDER BY created_at DESC");
@@ -96,8 +96,8 @@
                         break;
                     case 'Development':
                         $sql = $pdo->query("SELECT * 
-                                            FROM topics 
-                                            INNER JOIN users 
+                                            FROM users 
+                                            INNER JOIN topics 
                                             ON users.id = topics.users_id 
                                             WHERE boards_id = 2 
                                             ORDER BY created_at DESC");
@@ -115,8 +115,8 @@
                         break;
                     case 'Smalltalk':
                         $sql = $pdo->query("SELECT * 
-                                            FROM topics 
-                                            INNER JOIN users 
+                                            FROM users 
+                                            INNER JOIN topics 
                                             ON users.id = topics.users_id 
                                             WHERE boards_id = 3 
                                             ORDER BY created_at DESC");
@@ -134,8 +134,8 @@
                         break;
                     case 'Events':
                         $sql = $pdo->query("SELECT * 
-                                            FROM topics 
-                                            INNER JOIN users 
+                                            FROM users 
+                                            INNER JOIN topics 
                                             ON users.id = topics.users_id 
                                             WHERE boards_id = 4 
                                             ORDER BY created_at DESC");
@@ -153,8 +153,8 @@
                         break;
                     default:
                         $sql = $pdo->query("SELECT * 
-                                            FROM topics 
-                                            INNER JOIN users 
+                                            FROM users 
+                                            INNER JOIN topics 
                                             ON users.id = topics.users_id 
                                             WHERE boards_id = 1 
                                             ORDER BY created_at DESC");
