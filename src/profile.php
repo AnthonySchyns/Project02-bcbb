@@ -1,6 +1,11 @@
 <?php
 require "connexion.php";
 session_start();
+
+if (!isset($_SESSION['idUser'])) {
+  header('location: index.php');
+}
+
 $errors = array();
 if (isset($_POST['submit'])) {
     $nickname = trim($_POST['new_nickname']);
