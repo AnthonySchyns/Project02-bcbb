@@ -1,29 +1,50 @@
 <?php 
 require "connexion.php";
-
-if(isset($_POST['submit'])){
-  if ($_POST['new_password'] === $_POST['confirmer']) {
-  $nickname = $_POST['new_nickname'];
-  $password = $_POST['new_password'];
-  $signature = $_POST['signature'];
-  $update = "UPDATE users "
-          . "SET `nickname`='".trim($nickname)."', `password`='".trim($password)."', `signature`='".trim($signature)."' "
-          . "WHERE id = 1";
-          $sth = $pdo->prepare($update);
-  $sth->execute();
-  $sth->closeCursor();
-  $sth = NULL;
-  }
-}
+session_start();
 $sql = "SELECT * "
       . "FROM users "
       . "WHERE id = 1";
 $sth = $pdo->prepare($sql);
 $sth->execute();
-$user = $sth->fetch(PDO::FETCH_OBJ);
+$useru = $sth->fetch(PDO::FETCH_OBJ);
 $sth->closeCursor();
 $sth= null;
 $email = $user->email;
+if(isset($_POST['submit'])){
+  $nickname = trim($_POST['new_nickname']);
+  $password = trim($_POST['new_password']);
+  $password2 = trim($_POST['confirmer']);
+  $signature = trim($_POST['signature']);
+  // Erreurs
+  $errors = array();
+  if ($password != $password2) {
+	array_push($errors, "Modification annulée : les deux mots de passe ne correspondaient pas");
+  }
+  $sql = "SELECT * "
+        ." FROM users WHERE id != 1";
+$sth = $pdo->prepare($sql);
+$sth->execute();
+$users = $sth->fetchAll(PDO::FETCH_OBJ);
+$sth->closeCursor();
+$sth = null;
+  foreach ($users as $user) {
+        if($nickname === $user->nickname)
+        {
+            array_push($errors, "Modification annulée : pseudo déjà existant");
+        }
+      }
+// Fin erreurs
+      if(count($errors) == 0) {
+        $update = "UPDATE users "
+                . "SET `nickname`='".$nickname."', `password`='".$password."', `signature`='".$signature."' "
+                . "WHERE id = 1";
+        $sth = $pdo->prepare($update);
+        $sth->execute();
+        $sth->closeCursor();
+        $sth = NULL;
+      }
+  
+}
 function get_gravatar( $email, $s = 80, $d = 'mp', $r = 'g', $img = false, $atts = array() ) {
     $url = 'https://www.gravatar.com/avatar/';
     $url .= md5( strtolower( trim( $email ) ) );
@@ -34,11 +55,9 @@ function get_gravatar( $email, $s = 80, $d = 'mp', $r = 'g', $img = false, $atts
             $url .= ' ' . $key . '="' . $val . '"';
         $url .= ' />';
     }
-    var_dump($url);
     return $url;
 }
-$src = get_gravatar( $email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array() );
-      var_dump($src);    
+$src = get_gravatar( $email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array() );   
 
 ?>
 <!DOCTYPE html>
@@ -61,7 +80,7 @@ $src = get_gravatar( $email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts 
     <div class="bg-light rounded border border-light container">
       <form action="http://localhost/profile.php" method="post">
       <div class="d-flex justify-content-center mt-4">
-      <img src="<?php echo $src?>"/>
+      <img src="<?php echo $src?>" class="rounded-circle"/>
       </div>
         <div class="form-group d-flex justify-content-center mt-3 pt-4">
           <a
@@ -86,16 +105,14 @@ $src = get_gravatar( $email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts 
         </div>
         <div class="form-group row mt-5">
           <label for="new_nickname" class="col-sm-2 col-form-label"
-            >Pseudo :</label
-          >
+            >Pseudo :</label>
           <div class="col-sm-10">
             <input
               type="text"
               name="new_nickname"
               id="new_nickname"
               class="form-control"
-              maxlength = 10
-              value="<?php echo $user->nickname ?>"
+              value="<?php echo $useru->nickname ?>"
               required
             />
           </div>
@@ -125,18 +142,17 @@ $src = get_gravatar( $email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts 
               name="confirmer"
               id="confirmer"
               class="form-control"
-              value="<?php echo $user->password ?>"
+              value="<?php echo $useru->password ?>"
               required
             />
           </div>
         </div>
         <div class="form-group row mt-5">
           <label for="signature" class="col-sm-2 col-form-label"
-            >Signature :</label
-          >
+            >Signature :</label>
           <div class="col-sm-10">
             <textarea style="width:100%" id="signature" name="signature">
-            <?php echo $user->signature ?>
+            <?php echo $useru->signature ?>
         </textarea
             >
           </div>
@@ -150,20 +166,18 @@ $src = get_gravatar( $email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts 
             class="btn btn-secondary justify-content-center"
           />
         </div>
+        <?php  if (count($errors) > 0) : ?>
+                            <?php foreach ($errors as $error) : ?>
+                                <p class="error text-center font-weight-bold text-danger mt-O" style="font-size:10px">
+                                    <?php
+                                        if($error === "Modification annulée : les deux mots de passe ne correspondaient pas")echo $error;
+                                        if($error === "Modification annulée : pseudo déjà existant")echo $error;
+                                    ?>
+                                </p>
+                            <?php endforeach ?>
+                        <?php  endif ?>
       </form>
     </div>
-    <script>
-    document.getElementById("valider").addEventListener("click", () => {
-      let password = document.getElementById("new_password");
-      let confirm = document.getElementById("confirmer");
-      if (password.value != confirm.value)
-      {
-        password.style.borderColor = "red";
-        confirm.style.borderColor = "red";
-        alert("Vous avez mal confirmé votre mot de passe, veuillez recommencez.");
-      }
-    });
-    </script>
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -181,4 +195,4 @@ $src = get_gravatar( $email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts 
       crossorigin="anonymous"
     ></script>
   </body>
-</html>
+  </html>

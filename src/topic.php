@@ -1,3 +1,98 @@
+<?php
+
+require_once 'connexion.php';
+
+// Gravatar
+function get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array())
+{
+    $url = 'https://www.gravatar.com/avatar/';
+    $url .= md5(strtolower(trim($email)));
+    $url .= "?s=$s&d=$d&r=$r";
+    if ($img) {
+        $url = '<img src="' . $url . '"';
+        foreach ($atts as $key => $val) {
+            $url .= ' ' . $key . '="' . $val . '"';
+        }
+
+        $url .= ' />';
+    }
+    return $url;
+}
+
+// Del Message
+if (isset($_POST['del'])) {
+    $dateTime = date("Y-m-d H:i:s");
+    $idMessage = $_POST['del'];
+    $sqlDelete = "UPDATE messages "
+        . "SET deleted_at = '" . $dateTime . "' "
+        . "WHERE id = '" . $idMessage . "'";
+
+    $sth = $pdo->prepare($sqlDelete);
+    $sth->execute();
+    $sth->closeCursor();
+    $sth = null;
+}
+
+// Update Message
+if (isset($_POST['sendUpdate'])) {
+    $dateTime = date("Y-m-d H:i:s");
+    $idMessage = $_POST['sendUpdate'];
+    $content = $_POST['content'];
+    $sqlUpdate = "UPDATE messages "
+        . "SET content = '" . $content . "', "
+        . "updated_at = '" . $dateTime . "' "
+        . "WHERE id = '" . $idMessage . "'";
+
+    $sth = $pdo->prepare($sqlUpdate);
+    $sth->execute();
+    $sth->closeCursor();
+    $sth = null;
+}
+
+// Get Topics
+$idTopic = $_GET['idTopic'] = 1;
+$sql = "SELECT * "
+    . "FROM topics "
+    . "INNER JOIN users "
+    . "ON users.id = topics.users_id "
+    . "WHERE topics.id = $idTopic";
+$sth = $pdo->prepare($sql);
+$sth->execute();
+$topic = $sth->fetch(PDO::FETCH_OBJ);
+$sth->closeCursor();
+$sth = null;
+
+$idTopic = $topic->id;
+
+// Add Message
+if (isset($_POST['addMessage'])) {
+    $content = $_POST['content'];
+    $dateTime = date("Y-m-d H:i:s");
+    $user = 1;
+
+    $sqlAjout = "INSERT INTO messages "
+        . "SET content = '$content', "
+        . "created_at = '$dateTime', "
+        . "updated_at = '$dateTime', "
+        . "users_id = '$user', "
+        . "topics_id = '$idTopic' ";
+
+    $pdo->exec($sqlAjout);
+}
+
+// Get Messages
+$sql = "SELECT * "
+    . "FROM users "
+    . "INNER JOIN messages "
+    . "ON users.id = messages.users_id "
+    . "WHERE topics_id = $idTopic";
+$sth = $pdo->prepare($sql);
+$sth->execute();
+$messages = $sth->fetchAll(PDO::FETCH_OBJ);
+$sth->closeCursor();
+$sth = null;
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -17,57 +112,73 @@
     </head>
 
     <body>
-        <h1 class="text-center mt-5">Titre Topic</h1>
+        <h1 class="text-center mt-5"><?php echo $topic->title ?></h1>
         <section class="container mt-5">
             <div class="row border">
                 <div class="col-md-2 border-right p-5">
-                    <img src="img/profil-test.webp" alt="image user" class="img-thumbnail">
-                    <p class="text-center mt-4 font-weight-bold">User Name</p>
+                    <img src="<?php echo get_gravatar($topic->email); ?>" class="img-thumbnail">
+                    <p class="text-center mt-4 font-weight-bold"><?php echo $topic->nickname ?></p>
                 </div>
                 <div class="col p-5">
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Velit obcaecati corporis ratione quos
-                        exercitationem fuga, sint eaque. Similique nesciunt accusantium recusandae soluta repellat cum,
-                        nulla, eveniet libero cumque modi doloribus.Lorem ipsum dolor sit, amet consectetur adipisicing
-                        elit. Velit obcaecati corporis ratione quos exercitationem fuga, sint eaque. Similique nesciunt
-                        accusantium recusandae soluta repellat cum, nulla, eveniet libero cumque modi doloribus.Lorem
-                        ipsum dolor sit, amet consectetur adipisicing elit. Velit obcaecati corporis ratione quos
-                        exercitationem fuga, sint eaque. Similique nesciunt accusantium recusandae soluta repellat cum,
-                        nulla, eveniet libero cumque modi doloribus.</p>
-                    <p class="text-right">02/03/2020</p>
+                    <p><?php echo $topic->content ?></p>
+                    <p class="text-right"><?php echo $topic->updated_at ?></p>
                 </div>
             </div>
         </section>
+
         <section class="container mt-5">
             <h3 class="mb-5">Votre Message</h3>
-            <form action="index.php" method="post" class="row">
-                <textarea type="text" class="form-control" placeholder="Message"></textarea>
-                <button type="submit" class="btn btn-secondary mt-3">Envoyer</button>
+            <form action="topic.php" method="post" class="row">
+                <textarea type="text" class="form-control" name="content" placeholder="Message"></textarea>
+                <button type="submit" name="addMessage" class="btn btn-secondary mt-3">Envoyer</button>
             </form>
         </section>
 
         <section class="container mt-5">
             <h3 class="mb-5">Messages</h3>
+
+        <?php foreach ($messages as $message) {?>
+
             <div class="row border">
                 <div class="col-md-2 border-right p-5 align-middle">
-                    <img src="img/profil-test.webp" alt="image user" class="img-thumbnail">
-                    <p class="text-center mt-4 font-weight-bold">User Name</p>
+                    <img src="<?php echo get_gravatar($message->email); ?>" alt="image user" class="img-thumbnail">
+                    <p class="text-center mt-4 font-weight-bold"><?php echo $message->nickname ?></p>
                 </div>
                 <div class="col p-5">
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Velit obcaecati corporis ratione quos
-                        exercitationem fuga, sint eaque. Similique nesciunt accusantium recusandae soluta repellat cum,
-                        nulla, eveniet libero cumque modi doloribus.Lorem ipsum dolor sit, amet consectetur adipisicing
-                        elit. Velit obcaecati corporis ratione quos exercitationem fuga, sint eaque. Similique nesciunt
-                        accusantium recusandae soluta repellat cum, nulla, eveniet libero cumque modi doloribus.Lorem
-                        ipsum dolor sit, amet consectetur adipisicing elit. Velit obcaecati corporis ratione quos
-                        exercitationem fuga, sint eaque. Similique nesciunt accusantium recusandae soluta repellat cum,
-                        nulla, eveniet libero cumque modi doloribus.</p>
-                    <p class="text-right">02/03/2020</p>
+
+            <?php if ($message->deleted_at == null) {?>
+                <?php if ($_POST['update'] == $message->id) {?>
+                    <form action="topic.php" method="post">
+                        <textarea type="text" class="form-control" name="content"><?php echo $message->content ?></textarea>
+                        <button type="submit" name="sendUpdate" value="<?php echo $message->id ?>" class="btn btn-secondary mt-3">Modifier</button>
+                    </form>
+                <?php } else {?>
+                    <p><?php echo $message->content ?></p>
+                    <p class="text-right"><?php echo $message->updated_at ?></p>
+                <?php }?>
+            <?php } else {?>
+                    <p>Le message a été supprimé !!</p>
+            <?php }?>
+
                 </div>
                 <div class="col-1 d-flex flex-column justify-content-around align-items-center">
-                    <a href="#"><i class="fas fa-edit"></i></a>
-                    <a href="#"><i class="fas fa-trash-alt"></i></a>
+
+            <?php if ($message->deleted_at == null) {?>
+                <?php if (empty($_POST['update'])) {?>
+                    <form action="topic.php" method="post">
+                            <button type="submit" name="update" value="<?php echo $message->id ?>" class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
+                    </form>
+                    <form action="topic.php" method="post">
+                        <button type="submit" name="del" value="<?php echo $message->id ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+                <?php }?>
+            <?php }?>
+
                 </div>
             </div>
+            <br>
+        <?php }?>
+
         </section>
 
         <footer>
@@ -84,6 +195,6 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
         </script>
-    </body>
 
+    </body>
 </html>
