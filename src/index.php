@@ -66,6 +66,7 @@
                                             WHERE boards_id = 1 
                                             ORDER BY created_at DESC");
                         echo '<div class="list-group">';
+                        include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
                             echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
                             echo '<div class="row row-cols-2">';
@@ -85,6 +86,7 @@
                                             WHERE boards_id = 2 
                                             ORDER BY created_at DESC");
                         echo '<div class="list-group">';
+                        include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
                             echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
                             echo '<div class="row row-cols-2">';
@@ -104,6 +106,7 @@
                                             WHERE boards_id = 3 
                                             ORDER BY created_at DESC");
                         echo '<div class="list-group">';
+                        include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
                             echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
                             echo '<div class="row row-cols-2">';
@@ -123,6 +126,7 @@
                                             WHERE boards_id = 4 
                                             ORDER BY created_at DESC");
                         echo '<div class="list-group">';
+                        include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
                             echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
                             echo '<div class="row row-cols-2">';
@@ -142,6 +146,7 @@
                                             WHERE boards_id = 1 
                                             ORDER BY created_at DESC");
                         echo '<div class="list-group">';
+                        include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
                             echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
                             echo '<div class="row row-cols-2">';
