@@ -114,14 +114,9 @@ $sth = null;
     </head>
 
     <body>
-        <ul class="nav justify-content-end">
-            <li class="nav-item bg-secondary">
-                <a class="nav-link text-white" href="register.php">Sign Up</a>
-            </li>
-            <li class="nav-item bg-secondary">
-                <a class="nav-link text-white" href="login.php">Sign in</a>
-            </li>
-        </ul>
+        <?php
+            include 'menu.php';
+        ?>
         <h1 class="text-center mt-5"><?php echo $topic->title ?></h1>
         <section class="container mt-5">
             <div class="row border">

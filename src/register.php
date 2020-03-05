@@ -60,6 +60,9 @@ if (isset($_POST['submit'])) {
         <title>Sign Up</title>
     </head>
     <body class="container">
+        <?php
+            include 'menu.php';
+        ?>
         <h3 class="text-center mt-5 mb-5">Register</h3>
         <form action="http://localhost/register.php" method="post">
             <div class="form-group row justify-content-center">
@@ -94,7 +97,7 @@ if ($error === "L'email existe déjà") {
                     <label for="nickname">
                         Pseudo
                         <!-- Affichange erreur pseudo requis-->
-                     
+                    
                         <?php if (count($errors) > 0): ?>
                             <?php foreach ($errors as $error): ?>
                                 <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
