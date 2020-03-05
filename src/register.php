@@ -1,8 +1,8 @@
 <?php
 require "connexion.php";
 session_start();
+$errors = array();
 if (isset($_POST['submit'])) {
-    $errors = array();
     $sql = "SELECT * "
         . " FROM users";
     $sth = $pdo->prepare($sql);
@@ -46,7 +46,7 @@ if (isset($_POST['submit'])) {
         $_SESSION['idUser'] = $user->id;
         $_SESSION['nickname'] = $nickname;
         $_SESSION['success'] = "Vous êtes maintenant connecté";
-        header('location: index.php');
+        //header('location: index.php');
     }
 }
 ?>
@@ -94,6 +94,7 @@ if ($error === "L'email existe déjà") {
                     <label for="nickname">
                         Pseudo
                         <!-- Affichange erreur pseudo requis-->
+                     
                         <?php if (count($errors) > 0): ?>
                             <?php foreach ($errors as $error): ?>
                                 <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
@@ -110,6 +111,7 @@ if ($error === "Ce pseudo existe déjà") {
                                 </span>
                             <?php endforeach?>
                         <?php endif?>
+                    
                         <!-- Affichange erreur pseudo requis-->
                     </label>
                     <input type="text" class="form-control" id="nickname" placeholder="example55" name="nickname">
