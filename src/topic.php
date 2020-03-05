@@ -66,8 +66,6 @@ $topic = $sth->fetch(PDO::FETCH_OBJ);
 $sth->closeCursor();
 $sth = null;
 
-$idTopic = $topic->id;
-
 // Add Message
 if (isset($_POST['addMessage'])) {
     $content = $_POST['content'];
@@ -141,7 +139,7 @@ $sth = null;
         <section class="container mt-5">
             <h3 class="mb-5">Votre Message</h3>
             <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row">
-                <textarea type="text" class="form-control" name="content" placeholder="Message"></textarea>
+                <textarea type="text" class="form-control" name="content" placeholder="Message" rows="5"></textarea>
                 <button type="submit" name="addMessage" class="btn btn-secondary mt-3">Envoyer</button>
             </form>
         </section>
@@ -161,7 +159,7 @@ $sth = null;
             <?php if ($message->deleted_at == null) {?>
                 <?php if ($_POST['update'] == $message->id) {?>
                     <form action="topic.php?idTopic=<?php echo $path ?>" method="post">
-                        <textarea type="text" class="form-control" name="content"><?php echo $message->content ?></textarea>
+                        <textarea type="text" class="form-control" name="content" rows="10"><?php echo $message->content ?></textarea>
                         <button type="submit" name="sendUpdate" value="<?php echo $message->id ?>" class="btn btn-secondary mt-3">Modifier</button>
                     </form>
                 <?php } else {?>
