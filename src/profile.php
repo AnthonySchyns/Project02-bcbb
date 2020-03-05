@@ -99,7 +99,7 @@ $src = get_gravatar( $email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts 
               class="form-control-plaintext"
               name="new_email"
               id="new_email"
-              value="<?php echo $user->email ?>"
+              value="<?php echo $useru->email ?>"
             />
           </div>
         </div>
