@@ -10,7 +10,6 @@ require_once 'connexion.php';
 
 // Add Message
 if (isset($_POST['addTopic'])) {
-    var_dump($_POST['title']);
     $title = $_POST['title'];
     $content = $_POST['content'];
     $idBoards = $_POST['idBoards'];
@@ -64,7 +63,7 @@ $sth = null;
         <section class="container mt-5">
             <div class="row border">
                 <div class="col p-5">
-                    <form action="addtopic.php" method="post">
+                    <form action="addTopic.php" method="post">
                         <div class="form-group">
                             <label for="title">Title</label>
                             <input type="text" class="form-control" name="title" placeholder="Title">
