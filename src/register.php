@@ -46,7 +46,7 @@ if (isset($_POST['submit'])) {
         $_SESSION['idUser'] = $user->id;
         $_SESSION['nickname'] = $nickname;
         $_SESSION['success'] = "Vous êtes maintenant connecté";
-        //header('location: index.php');
+        header('location: index.php');
     }
 }
 ?>
