@@ -13,32 +13,15 @@
         <title>BCBB</title>
     </head>
     <body>
-        <ul class="nav justify-content-end">
-            <li class="nav-item">
-                <?php
-                    if($board == "register.php"){
-                        echo '<a class="nav-link text-white bg-dark" href="register.php">Sign Up</a>';
-                    } else {
-                        echo '<a class="nav-link text-white bg-secondary" href="register.php">Sign Up</a>';
-                    }
-                ?>
-            </li>
-            <li class="nav-item">
-                <?php
-                    if($board == "login.php"){
-                        echo '<a class="nav-link text-white bg-dark" href="login.php">Sign In</a>';
-                    } else {
-                        echo '<a class="nav-link text-white bg-secondary" href="login.php">Sign In</a>';
-                    }
-                ?>
-            </li>
-        </ul>
+        <?php
+            include 'menu.php';
+        ?>
         <div class="container">
-            <h1 class="text-center">BCBB</h1>
+            <h1 class="text-center mt-3 mb-3">BCBB</h1>
             <ul class="nav nav-justified">
                 <li class="nav-item bg-secondary">
                     <?php
-                        if($board == "/index.php?board=General" OR $board == "/"){
+                        if($board == "/index.php?board=General" OR $board == "/" OR $board == "/index.php"){
                             echo '<a class="nav-link text-white bg-dark" href="index.php?board=General">General</a>';
                         } else {
                             echo '<a class="nav-link text-white bg-secondary" href="index.php?board=General">General</a>';
