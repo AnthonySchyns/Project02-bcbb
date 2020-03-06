@@ -10,10 +10,12 @@ if (isset($_POST['submit'])) {
     $users = $sth->fetchAll(PDO::FETCH_OBJ);
     $sth->closeCursor();
     $sth = null;
-    $email = trim($_POST['email']);
-    $nickname = trim($_POST['nickname']);
-    $password = trim($_POST['password']);
-    $password2 = trim($_POST['password2']);
+    // supprimer espace debut et fin chaine de charactère + empêcher insertion sql dans input
+    $email = trim(addslashes($_POST['email']));
+    $nickname = trim(addslashes($_POST['nickname']));
+    $password = trim(addslashes($_POST['password']));
+    $password2 = trim(addslashes($_POST['password2']));
+    // gestion des erreurs
     if (empty($nickname)) {array_push($errors, "Pseudo requis");}
     if (empty($email)) {array_push($errors, "Email requis");}
     if (empty($password)) {array_push($errors, "Mot de passe requis");}
@@ -28,6 +30,7 @@ if (isset($_POST['submit'])) {
             array_push($errors, "Ce pseudo existe déjà");
         }
     }
+    // création de l'utilisateur dans la base de donnée
     if (count($errors) == 0) {
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $insert = "INSERT INTO users (email, nickname, password, signature, avatar)

@@ -8,10 +8,11 @@ if (!isset($_SESSION['idUser'])) {
 
 $errors = array();
 if (isset($_POST['submit'])) {
-    $nickname = trim($_POST['new_nickname']);
-    $password = trim($_POST['new_password']);
-    $password2 = trim($_POST['confirmer']);
-    $signature = trim($_POST['signature']);
+   // supprimer espace debut et fin chaine de charactère + empêcher insertion sql dans input
+    $nickname = trim(addslashes($_POST['new_nickname']));
+    $password = trim(addslashes($_POST['new_password']));
+    $password2 = trim(addslashes($_POST['confirmer']));
+    $signature = trim(addslashes($_POST['signature']));
     // Erreurs
     if ($password != $password2) {
         array_push($errors, "Modification annulée : les deux mots de passe ne correspondaient pas");
@@ -28,7 +29,7 @@ if (isset($_POST['submit'])) {
             array_push($errors, "Modification annulée : pseudo déjà existant");
         }
     }
-// Fin erreurs
+// Modifications des données dans la base de données
     if (count($errors) == 0) {
       $hash = password_hash($password, PASSWORD_DEFAULT);
       if (empty($password)) {
@@ -57,7 +58,7 @@ $useru = $sth->fetch(PDO::FETCH_OBJ);
 $sth->closeCursor();
 $sth = null;
 $email = $useru->email;
-
+// gravatar
 function get_gravatar($email, $s = 80, $d = 'mp', $r = 'g', $img = false, $atts = array())
 {
     $url = 'https://www.gravatar.com/avatar/';

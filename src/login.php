@@ -5,8 +5,9 @@ require_once 'connexion.php';
 session_start();
 $errors = array();
 if (isset($_POST['submit'])) {
-$email = $_POST['email'];
-$password = $_POST['password'];
+// empecher injections sql dans les inputs
+$email = addslashes($_POST['email']);
+$password = addslashes($_POST['password']);
 
 $sql = "SELECT * "
     . "FROM users "
