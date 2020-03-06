@@ -6,23 +6,6 @@ require_once 'connexion.php';
 
 $path = $_GET['idTopic'];
 
-// Gravatar
-function get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array())
-{
-    $url = 'https://www.gravatar.com/avatar/';
-    $url .= md5(strtolower(trim($email)));
-    $url .= "?s=$s&d=$d&r=$r";
-    if ($img) {
-        $url = '<img src="' . $url . '"';
-        foreach ($atts as $key => $val) {
-            $url .= ' ' . $key . '="' . $val . '"';
-        }
-
-        $url .= ' />';
-    }
-    return $url;
-}
-
 // Del Message
 if (isset($_POST['del'])) {
     $dateTime = date("Y-m-d H:i:s");
@@ -55,6 +38,7 @@ if (isset($_POST['sendUpdate'])) {
 
 // Get Topics
 $idTopic = $_GET['idTopic'];
+
 $sql = "SELECT * "
     . "FROM topics "
     . "INNER JOIN users "
@@ -78,7 +62,7 @@ if (isset($_POST['addMessage'])) {
         . "updated_at = '$dateTime', "
         . "users_id = '$user', "
         . "topics_id = '$idTopic' ";
-
+        
     $pdo->exec($sqlAjout);
 }
 
@@ -110,6 +94,10 @@ $sth = null;
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+        <!-- Emoji Picker -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="lib/css/emoji.css" rel="stylesheet">
+
         <title>BCBB</title>
     </head>
 
@@ -135,8 +123,8 @@ $sth = null;
 
         <section class="container mt-5">
             <h3 class="mb-5">Votre Message</h3>
-            <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row">
-                <textarea type="text" class="form-control" name="content" placeholder="Message" rows="5"></textarea>
+            <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row emoji-picker-container">
+                <textarea type="text" class="form-control" name="content" placeholder="Message" rows="5" data-emojiable="true"></textarea>
                 <button type="submit" name="addMessage" class="btn btn-secondary mt-3">Envoyer</button>
             </form>
         </section>
@@ -147,7 +135,7 @@ $sth = null;
             <h3 class="mb-5">Messages</h3>
 
         <?php foreach ($messages as $message) {?>
-
+        
             <div class="row border">
                 <div class="col-md-2 border-right p-5 align-middle">
                     <img src="<?php echo get_gravatar($message->email); ?>" alt="image user" class="img-thumbnail">
@@ -157,8 +145,8 @@ $sth = null;
 
             <?php if ($message->deleted_at == null) {?>
                 <?php if ($_POST['update'] == $message->id) {?>
-                    <form action="topic.php?idTopic=<?php echo $path ?>" method="post">
-                        <textarea type="text" class="form-control" name="content" rows="10"><?php echo $message->content ?></textarea>
+                    <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row emoji-picker-container">
+                        <textarea type="text" class="form-control" name="content" rows="10" data-emojiable="true"><?php echo $message->content ?></textarea>
                         <button type="submit" name="sendUpdate" value="<?php echo $message->id ?>" class="btn btn-secondary mt-3">Modifier</button>
                     </form>
                 <?php } else {?>
@@ -172,7 +160,7 @@ $sth = null;
                 </div>
                 <div class="col-1 d-flex flex-column justify-content-around align-items-center">
 
-        <?php if (isset($_SESSION['idUser'])) { ?>
+        <?php if (isset($_SESSION['idUser']) AND $_SESSION['idUser'] == $message->users_id) { ?>
             <?php if ($message->deleted_at == null) {?>
                 <?php if (empty($_POST['update'])) {?>
                     <form action="topic.php?idTopic=<?php echo $path ?>" method="post">
@@ -196,6 +184,8 @@ $sth = null;
             <h1>&nbsp;</h1>
         </footer>
 
+        <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
         <!-- Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
             integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
@@ -205,6 +195,26 @@ $sth = null;
         </script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+        </script>
+
+        <!-- Emoji Picker -->
+        <script src="lib/js/config.js"></script>
+        <script src="lib/js/util.js"></script>
+        <script src="lib/js/jquery.emojiarea.js"></script>
+        <script src="lib/js/emoji-picker.js"></script>
+        <script>
+            $(function() {
+                // Initializes and creates emoji set from sprite sheet
+                window.emojiPicker = new EmojiPicker({
+                    emojiable_selector: '[data-emojiable=true]',
+                    assetsPath: '../lib/img/',
+                    popupButtonClasses: 'fa fa-smile-o'
+                });
+                // Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
+                // You may want to delay this step if you have dynamically created input fields that appear later in the loading process
+                // It can be called as many times as necessary; previously converted input fields will not be converted again
+                window.emojiPicker.discover();
+            });
         </script>
 
     </body>

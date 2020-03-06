@@ -8,10 +8,11 @@ if (!isset($_SESSION['idUser'])) {
 
 $errors = array();
 if (isset($_POST['submit'])) {
-    $nickname = trim($_POST['new_nickname']);
-    $password = trim($_POST['new_password']);
-    $password2 = trim($_POST['confirmer']);
-    $signature = trim($_POST['signature']);
+   // supprimer espace debut et fin chaine de charactère + empêcher insertion sql dans input
+    $nickname = trim(addslashes($_POST['new_nickname']));
+    $password = trim(addslashes($_POST['new_password']));
+    $password2 = trim(addslashes($_POST['confirmer']));
+    $signature = trim(addslashes($_POST['signature']));
     // Erreurs
     if ($password != $password2) {
         array_push($errors, "Modification annulée : les deux mots de passe ne correspondaient pas");
@@ -28,7 +29,7 @@ if (isset($_POST['submit'])) {
             array_push($errors, "Modification annulée : pseudo déjà existant");
         }
     }
-// Fin erreurs
+// Modifications des données dans la base de données
     if (count($errors) == 0) {
       $hash = password_hash($password, PASSWORD_DEFAULT);
       if (empty($password)) {
@@ -48,33 +49,6 @@ if (isset($_POST['submit'])) {
     }
 
 }
-$sql = "SELECT * "
-    . "FROM users "
-    . "WHERE id = '".$_SESSION['idUser']."'";
-$sth = $pdo->prepare($sql);
-$sth->execute();
-$useru = $sth->fetch(PDO::FETCH_OBJ);
-$sth->closeCursor();
-$sth = null;
-$email = $useru->email;
-
-function get_gravatar($email, $s = 80, $d = 'mp', $r = 'g', $img = false, $atts = array())
-{
-    $url = 'https://www.gravatar.com/avatar/';
-    $url .= md5(strtolower(trim($email)));
-    $url .= "?s=$s&d=$d&r=$r";
-    if ($img) {
-        $url = '<img src="' . $url . '"';
-        foreach ($atts as $key => $val) {
-            $url .= ' ' . $key . '="' . $val . '"';
-        }
-
-        $url .= ' />';
-    }
-    return $url;
-}
-$src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array());
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -94,6 +68,7 @@ $src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts =
   <body class="bg-white p-0 m-0">
     <?php
       include 'menu.php';
+      $src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array());
     ?>
     <h1 class="titre text-center">Profile</h1>
     <div class="bg-light rounded border border-light container">

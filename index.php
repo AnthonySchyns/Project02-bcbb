@@ -2,6 +2,7 @@
     require_once('connexion.php');
     session_start();
     $board .= $_SERVER['REQUEST_URI'];
+    $limit = 3;
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -64,7 +65,8 @@
                                             INNER JOIN topics 
                                             ON users.id = topics.users_id 
                                             WHERE boards_id = 1 
-                                            ORDER BY created_at DESC");
+                                            ORDER BY created_at DESC
+                                            LIMIT " . $limit);
                         echo '<div class="list-group">';
                         include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
@@ -84,7 +86,8 @@
                                             INNER JOIN topics 
                                             ON users.id = topics.users_id 
                                             WHERE boards_id = 2 
-                                            ORDER BY created_at DESC");
+                                            ORDER BY created_at DESC
+                                            LIMIT " . $limit);
                         echo '<div class="list-group">';
                         include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
@@ -104,7 +107,8 @@
                                             INNER JOIN topics 
                                             ON users.id = topics.users_id 
                                             WHERE boards_id = 3 
-                                            ORDER BY created_at DESC");
+                                            ORDER BY created_at DESC
+                                            LIMIT " . $limit);
                         echo '<div class="list-group">';
                         include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
@@ -124,7 +128,8 @@
                                             INNER JOIN topics 
                                             ON users.id = topics.users_id 
                                             WHERE boards_id = 4 
-                                            ORDER BY created_at DESC");
+                                            ORDER BY created_at DESC
+                                            LIMIT " . $limit);
                         echo '<div class="list-group">';
                         include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
@@ -144,7 +149,8 @@
                                             INNER JOIN topics 
                                             ON users.id = topics.users_id 
                                             WHERE boards_id = 1 
-                                            ORDER BY created_at DESC");
+                                            ORDER BY created_at DESC
+                                            LIMIT " . $limit);
                         echo '<div class="list-group">';
                         include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
