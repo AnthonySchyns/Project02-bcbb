@@ -48,31 +48,6 @@ if (isset($_POST['submit'])) {
     }
 
 }
-$sql = "SELECT * "
-    . "FROM users "
-    . "WHERE id = '".$_SESSION['idUser']."'";
-$sth = $pdo->prepare($sql);
-$sth->execute();
-$useru = $sth->fetch(PDO::FETCH_OBJ);
-$sth->closeCursor();
-$sth = null;
-$email = $useru->email;
-
-function get_gravatar($email, $s = 80, $d = 'mp', $r = 'g', $img = false, $atts = array())
-{
-    $url = 'https://www.gravatar.com/avatar/';
-    $url .= md5(strtolower(trim($email)));
-    $url .= "?s=$s&d=$d&r=$r";
-    if ($img) {
-        $url = '<img src="' . $url . '"';
-        foreach ($atts as $key => $val) {
-            $url .= ' ' . $key . '="' . $val . '"';
-        }
-
-        $url .= ' />';
-    }
-    return $url;
-}
 $src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array());
 
 ?>
