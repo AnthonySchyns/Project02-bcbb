@@ -55,6 +55,7 @@ if (isset($_POST['sendUpdate'])) {
 
 // Get Topics
 $idTopic = $_GET['idTopic'];
+
 $sql = "SELECT * "
     . "FROM topics "
     . "INNER JOIN users "
@@ -172,7 +173,7 @@ $sth = null;
                 </div>
                 <div class="col-1 d-flex flex-column justify-content-around align-items-center">
 
-        <?php if (isset($_SESSION['idUser'])) { ?>
+        <?php if (isset($_SESSION['idUser']) AND $_SESSION['idUser'] == $message->users_id) { ?>
             <?php if ($message->deleted_at == null) {?>
                 <?php if (empty($_POST['update'])) {?>
                     <form action="topic.php?idTopic=<?php echo $path ?>" method="post">
