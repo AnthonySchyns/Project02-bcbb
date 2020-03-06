@@ -48,8 +48,6 @@ if (isset($_POST['submit'])) {
     }
 
 }
-$src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array());
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -69,6 +67,7 @@ $src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts =
   <body class="bg-white p-0 m-0">
     <?php
       include 'menu.php';
+      $src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array());
     ?>
     <h1 class="titre text-center">Profile</h1>
     <div class="bg-light rounded border border-light container">
