@@ -6,23 +6,6 @@ require_once 'connexion.php';
 
 $path = $_GET['idTopic'];
 
-// Gravatar
-function get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array())
-{
-    $url = 'https://www.gravatar.com/avatar/';
-    $url .= md5(strtolower(trim($email)));
-    $url .= "?s=$s&d=$d&r=$r";
-    if ($img) {
-        $url = '<img src="' . $url . '"';
-        foreach ($atts as $key => $val) {
-            $url .= ' ' . $key . '="' . $val . '"';
-        }
-
-        $url .= ' />';
-    }
-    return $url;
-}
-
 // Del Message
 if (isset($_POST['del'])) {
     $dateTime = date("Y-m-d H:i:s");
@@ -219,7 +202,6 @@ $sth = null;
         <script src="lib/js/util.js"></script>
         <script src="lib/js/jquery.emojiarea.js"></script>
         <script src="lib/js/emoji-picker.js"></script>
-
         <script>
             $(function() {
                 // Initializes and creates emoji set from sprite sheet
