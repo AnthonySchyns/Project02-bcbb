@@ -4,6 +4,9 @@ session_start();
 
 require_once 'connexion.php';
 
+// Markdown
+require('lib/Parsedown.php');
+
 $path = $_GET['idTopic'];
 
 // Del Message
@@ -149,7 +152,8 @@ $sth = null;
                         <button type="submit" name="sendUpdate" value="<?php echo $message->id ?>" class="btn btn-secondary mt-3">Modifier</button>
                     </form>
                 <?php } else {?>
-                    <p><?php echo $message->content ?></p>
+                    <p><?php $Parsedown = new Parsedown();
+                            echo $Parsedown->text($message->content); ?></p>
                     <p class="text-right"><?php echo $message->updated_at ?></p>
                 <?php }?>
             <?php } else {?>
