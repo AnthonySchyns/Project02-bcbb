@@ -63,6 +63,7 @@ if (isset($_POST['submit'])) {
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
       crossorigin="anonymous"
     />
+    <link href="style.css" rel="stylesheet" type="text/css"/>
     <title>Profile</title>
   </head>
   <body class="bg-white p-0 m-0">
@@ -70,7 +71,7 @@ if (isset($_POST['submit'])) {
       include 'menu.php';
       $src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array());
     ?>
-    <h1 class="titre text-center">Profile</h1>
+    <h1 class="titre text-center mt-5 pt-5">Profile</h1>
     <div class="bg-light rounded border border-light container">
       <form action="profile.php" method="post">
       <div class="d-flex justify-content-center mt-4">
@@ -176,6 +177,9 @@ if ($error === "Modification annulée : pseudo déjà existant") {
                         <?php endif?>
       </form>
     </div>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="scrollBar.js">
+    </script>
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.4.1.slim.min.js"

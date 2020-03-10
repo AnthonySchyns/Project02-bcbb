@@ -29,7 +29,7 @@
     $profile = get_gravatar($email, $s = 30, $d = 'mp', $r = 'g', $img = false, $atts = array());
 ?>
 <?php if ($_SESSION["idUser"] == true) {?>
-    <nav class="navbar navbar-dark bg-secondary">
+    <nav class="navbar navbar-dark bg-secondary position-fixed">
         <a class="navbar-brand" href="index.php">Home</a>
         <ul class="nav justify-content-end">
             <li class="nav-item">
@@ -41,7 +41,7 @@
         </ul>
     </nav>
 <?php } else {?>
-    <nav class="navbar navbar-dark bg-secondary">
+    <nav class="navbar navbar-dark bg-secondary position-fixed">
         <a class="navbar-brand" href="index.php">Home</a>
         <ul class="nav justify-content-end">
             <li class="nav-item">

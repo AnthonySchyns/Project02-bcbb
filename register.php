@@ -60,6 +60,7 @@ if (isset($_POST['submit'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="style.css" rel="stylesheet" type="text/css"/>
         <title>Sign Up</title>
     </head>
     <body>
@@ -67,7 +68,7 @@ if (isset($_POST['submit'])) {
             include 'menu.php';
         ?>
         <div class="container">
-        <h3 class="text-center mt-5 mb-5">Register</h3>
+        <h3 class="text-center mt-5 pt-5 mb-5">Register</h3>
         <form action="register.php" method="post">
             <div class="form-group row justify-content-center">
                 <div class="col-sm-5">

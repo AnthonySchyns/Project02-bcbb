@@ -40,7 +40,7 @@ $sth = null;
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
+        <link rel="stylesheet" href="style.css" type="text/css"/>
         <title>Sign In</title>
     </head>
     <body>
@@ -48,7 +48,7 @@ $sth = null;
             include 'menu.php';
         ?>
         <div class="container">
-        <h3 class="text-center mt-5 mb-5">Login</h3>
+        <h3 class="text-center mt-5 pt-5 mb-5">Login</h3>
         <form action="login.php" method="post">
             <div class="form-group row justify-content-center">
                 <div class="col-sm-5">
