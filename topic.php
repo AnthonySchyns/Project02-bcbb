@@ -8,6 +8,7 @@ $path = $_GET['idTopic'];
 
 // Del Message
 if (isset($_POST['del'])) {
+    date_default_timezone_set('Europe/Brussels');
     $dateTime = date("Y-m-d H:i:s");
     $idMessage = $_POST['del'];
     $sqlDelete = "UPDATE messages "
@@ -22,6 +23,7 @@ if (isset($_POST['del'])) {
 
 // Update Message
 if (isset($_POST['sendUpdate'])) {
+    date_default_timezone_set('Europe/Brussels');
     $dateTime = date("Y-m-d H:i:s");
     $idMessage = $_POST['sendUpdate'];
     $content = $_POST['content'];
@@ -53,6 +55,7 @@ $sth = null;
 // Add Message
 if (isset($_POST['addMessage'])) {
     $content = $_POST['content'];
+    date_default_timezone_set('Europe/Brussels');
     $dateTime = date("Y-m-d H:i:s");
     $user = $_SESSION["idUser"];
 
@@ -90,14 +93,10 @@ $sth = null;
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"
             integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous" />
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
         <!-- Emoji Picker -->
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
         <link href="lib/css/emoji.css" rel="stylesheet">
-        <link href="style.css" rel="stylesheet" type="text/css"/>
+        <link href="style/style.css" rel="stylesheet" type="text/css"/>
         <title>BCBB</title>
     </head>
 
@@ -183,8 +182,6 @@ $sth = null;
         <footer>
             <h1>&nbsp;</h1>
         </footer>
-        <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-        <script src="scrollBar.js"></script>
 
         <!-- Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -216,6 +213,8 @@ $sth = null;
                 window.emojiPicker.discover();
             });
         </script>
+
+        <script src="js/scrollBar.js"></script>
 
     </body>
 </html>

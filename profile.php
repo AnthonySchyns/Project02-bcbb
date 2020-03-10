@@ -3,12 +3,12 @@ require "connexion.php";
 session_start();
 
 if (!isset($_SESSION['idUser'])) {
-  header('location: index.php');
+    header('location: index.php');
 }
 
 $errors = array();
 if (isset($_POST['submit'])) {
-   // supprimer espace debut et fin chaine de charactère + empêcher insertion sql dans input
+    // supprimer espace debut et fin chaine de charactère + empêcher insertion sql dans input
     $nickname = trim(addslashes($_POST['new_nickname']));
     $password = trim(addslashes($_POST['new_password']));
     $password2 = trim(addslashes($_POST['confirmer']));
@@ -18,7 +18,7 @@ if (isset($_POST['submit'])) {
         array_push($errors, "Modification annulée : les deux mots de passe ne correspondaient pas");
     }
     $sql = "SELECT * "
-        . " FROM users WHERE id != '".$_SESSION['idUser']."'";
+        . " FROM users WHERE id != '" . $_SESSION['idUser'] . "'";
     $sth = $pdo->prepare($sql);
     $sth->execute();
     $users = $sth->fetchAll(PDO::FETCH_OBJ);
@@ -31,17 +31,16 @@ if (isset($_POST['submit'])) {
     }
 // Modifications des données dans la base de données
     if (count($errors) == 0) {
-      $hash = password_hash($password, PASSWORD_DEFAULT);
-      if (empty($password)) {
-        $update = "UPDATE users "
-            . "SET `nickname`='" . $nickname . "', `signature`='" . $signature . "' "
-            . "WHERE id = '".$_SESSION['idUser']."'";
-      }
-      else {
-        $update = "UPDATE users "
-            . "SET `nickname`='" . $nickname . "', `password`='" . $hash . "', `signature`='" . $signature . "' "
-            . "WHERE id = '".$_SESSION['idUser']."'";
-      }
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        if (empty($password)) {
+            $update = "UPDATE users "
+                . "SET `nickname`='" . $nickname . "', `signature`='" . $signature . "' "
+                . "WHERE id = '" . $_SESSION['idUser'] . "'";
+        } else {
+            $update = "UPDATE users "
+                . "SET `nickname`='" . $nickname . "', `password`='" . $hash . "', `signature`='" . $signature . "' "
+                . "WHERE id = '" . $_SESSION['idUser'] . "'";
+        }
         $sth = $pdo->prepare($update);
         $sth->execute();
         $sth->closeCursor();
@@ -56,21 +55,14 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-      crossorigin="anonymous"
-    />
-    <link href="style.css" rel="stylesheet" type="text/css"/>
+    <link href="style/style.css" rel="stylesheet" type="text/css"/>
     <title>Profile</title>
   </head>
   <body class="bg-white p-0 m-0">
     <?php
-      include 'menu.php';
-      $src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array());
-    ?>
+include 'menu.php';
+$src = get_gravatar($email, $s = 120, $d = 'mp', $r = 'g', $img = false, $atts = array());
+?>
     <h1 class="titre text-center mt-5 pt-5">Profile</h1>
     <div class="bg-light rounded border border-light container">
       <form action="profile.php" method="post">
@@ -177,8 +169,6 @@ if ($error === "Modification annulée : pseudo déjà existant") {
                         <?php endif?>
       </form>
     </div>
-    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script src="scrollBar.js">
     </script>
     <!-- Bootstrap JS -->
     <script
@@ -196,5 +186,7 @@ if ($error === "Modification annulée : pseudo déjà existant") {
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
     ></script>
+
+    <script src="js/scrollBar.js">
   </body>
   </html>
