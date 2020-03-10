@@ -7,9 +7,7 @@ nav {
   width: 100%;
   z-index: 9998;
   transition: all 0.5s;
+  &.scrollUp {
+    transform: translateY(-70px);
+  }
 }
-nav.scrollUp {
-  transform: translateY(-70px);
-}
-
-/*# sourceMappingURL=style.css.map */

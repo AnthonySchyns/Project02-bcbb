@@ -5,7 +5,7 @@
 $host = 'mysql';
 $user = 'root';
 $pass = 'root';
-$dbname = 'dbBCBB';
+$dbname = 'mydb';
 
 $dsn = "mysql:host=$host;dbname=$dbname";
 

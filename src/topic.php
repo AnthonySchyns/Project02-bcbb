@@ -97,7 +97,7 @@ $sth = null;
         <!-- Emoji Picker -->
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
         <link href="lib/css/emoji.css" rel="stylesheet">
-
+        <link href="style.css" rel="stylesheet" type="text/css"/>
         <title>BCBB</title>
     </head>
 
@@ -105,7 +105,7 @@ $sth = null;
         <?php
             include 'menu.php';
         ?>
-        <h1 class="text-center mt-5"><?php echo $topic->title ?></h1>
+        <h1 class="text-center mt-5 pt-5"><?php echo $topic->title ?></h1>
         <section class="container mt-5">
             <div class="row border">
                 <div class="col-md-2 border-right p-5">
@@ -183,8 +183,8 @@ $sth = null;
         <footer>
             <h1>&nbsp;</h1>
         </footer>
-
         <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="scrollBar.js"></script>
 
         <!-- Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
