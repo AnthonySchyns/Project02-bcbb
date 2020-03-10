@@ -7,12 +7,12 @@ if (!isset($_SESSION['idUser'])) {
 }
 
 require_once 'connexion.php';
-
 // Add Message
 if (isset($_POST['addTopic'])) {
     $title = $_POST['title'];
     $content = $_POST['content'];
     $idBoards = $_POST['idBoards'];
+    date_default_timezone_set('Europe/Brussels');
     $dateTime = date("Y-m-d H:i:s");
     $idUser = $_SESSION["idUser"];
 
@@ -48,10 +48,7 @@ $sth = null;
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"
             integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous" />
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <link href="style.css" rel="stylesheet" type="text/css"/>
+            <link href="style/style.css" rel="stylesheet" type="text/css"/>
         <title>BCBB</title>
     </head>
 
