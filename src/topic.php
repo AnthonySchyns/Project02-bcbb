@@ -14,6 +14,7 @@ if (isset($_POST['del'])) {
     date_default_timezone_set('Europe/Brussels');
     $dateTime = date("Y-m-d H:i:s");
     $idMessage = $_POST['del'];
+
     $sqlDelete = "UPDATE messages "
         . "SET deleted_at = '" . $dateTime . "' "
         . "WHERE id = '" . $idMessage . "'";
@@ -30,6 +31,7 @@ if (isset($_POST['sendUpdate'])) {
     $dateTime = date("Y-m-d H:i:s");
     $idMessage = $_POST['sendUpdate'];
     $content = $_POST['content'];
+
     $sqlUpdate = "UPDATE messages "
         . "SET content = '" . $content . "', "
         . "updated_at = '" . $dateTime . "' "
@@ -49,6 +51,7 @@ $sql = "SELECT * "
     . "INNER JOIN users "
     . "ON users.id = topics.users_id "
     . "WHERE topics.id = $idTopic";
+
 $sth = $pdo->prepare($sql);
 $sth->execute();
 $topic = $sth->fetch(PDO::FETCH_OBJ);
@@ -68,7 +71,7 @@ if (isset($_POST['addMessage'])) {
         . "updated_at = '$dateTime', "
         . "users_id = '$user', "
         . "topics_id = '$idTopic' ";
-        
+
     $pdo->exec($sqlAjout);
 }
 
@@ -77,7 +80,8 @@ $sql = "SELECT * "
     . "FROM users "
     . "INNER JOIN messages "
     . "ON users.id = messages.users_id "
-    . "WHERE topics_id = $idTopic";
+    . "WHERE topics_id = $idTopic "
+    . "ORDER BY updated_at DESC";
 $sth = $pdo->prepare($sql);
 $sth->execute();
 $messages = $sth->fetchAll(PDO::FETCH_OBJ);
@@ -116,7 +120,7 @@ $sth = null;
                 </div>
                 <div class="col p-5">
                     <p><?php echo $topic->content ?></p>
-                    <p class="text-right"><?php echo $topic->updated_at ?></p>
+                    <p class="text-right"><?php $date = new DateTime($topic->created_at); echo $date->format('H:m d/m/Y') ?></p>
                 </div>
             </div>
         </section>
@@ -154,12 +158,7 @@ $sth = null;
                 <?php } else {?>
                     <p><?php $Parsedown = new Parsedown();
                             echo $Parsedown->text($message->content); ?></p>
-                    <p class="text-right"><?php $date = new DateTime($message->updated_at); echo $date->format('H:m d/m/Y');?></p>
-
-                <?php if($message->signature != NULL){ ?>
-                    <p><?php echo $message->signature ?></p>
-                <?php } ?>
-
+                    <p class="text-right"><?php $date = new DateTime($message->updated_at); echo $date->format('H:m d/m/Y') ?></p>
                 <?php }?>
             <?php } else {?>
                     <p>Le message a été supprimé !!</p>
