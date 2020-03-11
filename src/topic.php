@@ -154,7 +154,12 @@ $sth = null;
                 <?php } else {?>
                     <p><?php $Parsedown = new Parsedown();
                             echo $Parsedown->text($message->content); ?></p>
-                    <p class="text-right"><?php echo $message->updated_at ?></p>
+                    <p class="text-right"><?php $date = new DateTime($message->updated_at); echo $date->format('H:m d/m/Y');?></p>
+
+                <?php if($message->signature != NULL){ ?>
+                    <p><?php echo $message->signature ?></p>
+                <?php } ?>
+
                 <?php }?>
             <?php } else {?>
                     <p>Le message a été supprimé !!</p>

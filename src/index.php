@@ -67,13 +67,14 @@
                                             WHERE boards_id = 1 
                                             ORDER BY created_at DESC
                                             LIMIT " . $limit);
+                        $date = new DateTime($reponse['created_at']);
                         echo '<div class="list-group">';
                         include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
                             echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
                             echo '<div class="row row-cols-2">';
                             echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
-                            echo '<div class="col">' . $reponse['created_at'] . '</div>';
+                            echo '<div class="col">' . $date->format('H:m d/m/Y') . '</div>';
                             echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
                             echo '</div>';
                             echo '</a>';
@@ -88,13 +89,14 @@
                                             WHERE boards_id = 2 
                                             ORDER BY created_at DESC
                                             LIMIT " . $limit);
+                        $date = new DateTime($reponse['created_at']);
                         echo '<div class="list-group">';
                         include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
                             echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
                             echo '<div class="row row-cols-2">';
                             echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
-                            echo '<div class="col">' . $reponse['created_at'] . '</div>';
+                            echo '<div class="col">' . $date->format('H:m d/m/Y') . '</div>';
                             echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
                             echo '</div>';
                             echo '</a>';
@@ -109,13 +111,14 @@
                                             WHERE boards_id = 3 
                                             ORDER BY created_at DESC
                                             LIMIT " . $limit);
+                        $date = new DateTime($reponse['created_at']);
                         echo '<div class="list-group">';
                         include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
                             echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
                             echo '<div class="row row-cols-2">';
                             echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
-                            echo '<div class="col">' . $reponse['created_at'] . '</div>';
+                            echo '<div class="col">' . $date->format('H:m d/m/Y') . '</div>';
                             echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
                             echo '</div>';
                             echo '</a>';
@@ -130,13 +133,14 @@
                                             WHERE boards_id = 4 
                                             ORDER BY created_at DESC
                                             LIMIT " . $limit);
+                        $date = new DateTime($reponse['created_at']);
                         echo '<div class="list-group">';
                         include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
                             echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
                             echo '<div class="row row-cols-2">';
                             echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
-                            echo '<div class="col">' . $reponse['created_at'] . '</div>';
+                            echo '<div class="col">' . $date->format('H:m d/m/Y') . '</div>';
                             echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
                             echo '</div>';
                             echo '</a>';
@@ -151,13 +155,14 @@
                                             WHERE boards_id = 1 
                                             ORDER BY created_at DESC
                                             LIMIT " . $limit);
+                        $date = new DateTime($reponse['created_at']);
                         echo '<div class="list-group">';
                         include 'creaTopic.php';
                         while($reponse = $sql->fetch()){
                             echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
                             echo '<div class="row row-cols-2">';
                             echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
-                            echo '<div class="col">' . $reponse['created_at'] . '</div>';
+                            echo '<div class="col">' . $date->format('H:m d/m/Y') . '</div>';
                             echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
                             echo '</div>';
                             echo '</a>';
