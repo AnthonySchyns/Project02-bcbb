@@ -1,8 +1,37 @@
 <?php
+
     require_once('connexion.php');
+
     session_start();
+
     $board .= $_SERVER['REQUEST_URI'];
+
     $limit = 3;
+
+// Get Boards
+$sql = "SELECT * "
+    . "FROM boards ";
+$sth = $pdo->prepare($sql);
+$sth->execute();
+$boards = $sth->fetchAll(PDO::FETCH_OBJ);
+$sth->closeCursor();
+$sth = null;
+
+// Get Topics
+function getTopics(PDO $pdo, $a){
+    $sql = "SELECT * "
+        . "FROM users "
+        . "INNER JOIN topics "
+        . "ON users.id = topics.users_id "
+        . "WHERE boards_id = '" . $a . "'";
+    $sth = $pdo->prepare($sql);
+    $sth->execute();
+    return $sth->fetchAll(PDO::FETCH_OBJ);
+    $sth->closeCursor();
+    $sth = null;
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -13,163 +42,55 @@
         <title>BCBB</title>
     </head>
     <body>
+
         <?php
             include 'menu.php';
         ?>
+
         <div class="container">
             <h1 class="text-center mt-5 pt-5 mb-3">BCBB</h1>
             <ul class="nav nav-justified">
                 <li class="nav-item bg-secondary">
-                    <?php
-                    
-                        if($board == "/index.php?board=General" OR $board == "/" OR $board == "/index.php"){
-                            echo '<a class="nav-link text-white bg-dark" href="index.php?board=General">General</a>';
-                        } else {
-                            echo '<a class="nav-link text-white bg-secondary" href="index.php?board=General">General</a>';
-                        }
-                    ?>
+                    <a class="nav-link text-white <?php if($board == "/index.php?board=General" OR $board == "/" OR $board == "/index.php"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=General">General</a>
                 </li>
                 <li class="nav-item">
-                    <?php
-                        if($board == "/index.php?board=Development"){
-                            echo '<a class="nav-link text-white bg-dark" href="index.php?board=Development">Development</a>';
-                        } else {
-                            echo '<a class="nav-link text-white bg-secondary" href="index.php?board=Development">Development</a>';
-                        }
-                    ?>                
+                    <a class="nav-link text-white <?php if($board == "/index.php?board=Development"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Development">Development</a>
                 </li>
                 <li class="nav-item">
-                    <?php
-                        if($board == "/index.php?board=Smalltalk"){
-                            echo '<a class="nav-link text-white bg-dark" href="index.php?board=Smalltalk">Smalltalk</a>';
-                        } else {
-                            echo '<a class="nav-link text-white bg-secondary" href="index.php?board=Smalltalk">Smalltalk</a>';
-                        }
-                    ?>                
+                    <a class="nav-link text-white <?php if($board == "/index.php?board=Smalltalk"){ echo 'bg-dark';} else { echo 'bg-secondary';};?>" href="index.php?board=Smalltalk">Smalltalk</a>
                 </li>
                 <li class="nav-item">
-                    <?php
-                        if($board == "/index.php?board=Events"){
-                            echo '<a class="nav-link text-white bg-dark" href="index.php?board=Events">Events</a>';
-                        } else {
-                            echo '<a class="nav-link text-white bg-secondary" href="index.php?board=Events">Events</a>';
-                        }
-                    ?>                
+                    <a class="nav-link text-white <?php if($board == "/index.php?board=Events"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Events">Events</a>
                 </li>
             </ul>
-            <?php
-                switch ($_GET['board']) {
-                    case 'General':
-                        $sql = $pdo->query("SELECT * 
-                                            FROM users 
-                                            INNER JOIN topics 
-                                            ON users.id = topics.users_id 
-                                            WHERE boards_id = 1 
-                                            ORDER BY created_at DESC
-                                            LIMIT " . $limit);
-                        $date = new DateTime($reponse['created_at']);
-                        echo '<div class="list-group">';
-                        include 'creaTopic.php';
-                        while($reponse = $sql->fetch()){
-                            echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
-                            echo '<div class="row row-cols-2">';
-                            echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
-                            echo '<div class="col">' . $date->format('H:m d/m/Y') . '</div>';
-                            echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
-                            echo '</div>';
-                            echo '</a>';
-                        }
-                        echo '</div>';
-                        break;
-                    case 'Development':
-                        $sql = $pdo->query("SELECT * 
-                                            FROM users 
-                                            INNER JOIN topics 
-                                            ON users.id = topics.users_id 
-                                            WHERE boards_id = 2 
-                                            ORDER BY created_at DESC
-                                            LIMIT " . $limit);
-                        $date = new DateTime($reponse['created_at']);
-                        echo '<div class="list-group">';
-                        include 'creaTopic.php';
-                        while($reponse = $sql->fetch()){
-                            echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
-                            echo '<div class="row row-cols-2">';
-                            echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
-                            echo '<div class="col">' . $date->format('H:m d/m/Y') . '</div>';
-                            echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
-                            echo '</div>';
-                            echo '</a>';
-                        }
-                        echo '</div>';
-                        break;
-                    case 'Smalltalk':
-                        $sql = $pdo->query("SELECT * 
-                                            FROM users 
-                                            INNER JOIN topics 
-                                            ON users.id = topics.users_id 
-                                            WHERE boards_id = 3 
-                                            ORDER BY created_at DESC
-                                            LIMIT " . $limit);
-                        $date = new DateTime($reponse['created_at']);
-                        echo '<div class="list-group">';
-                        include 'creaTopic.php';
-                        while($reponse = $sql->fetch()){
-                            echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
-                            echo '<div class="row row-cols-2">';
-                            echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
-                            echo '<div class="col">' . $date->format('H:m d/m/Y') . '</div>';
-                            echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
-                            echo '</div>';
-                            echo '</a>';
-                        }
-                        echo '</div>';
-                        break;
-                    case 'Events':
-                        $sql = $pdo->query("SELECT * 
-                                            FROM users 
-                                            INNER JOIN topics 
-                                            ON users.id = topics.users_id 
-                                            WHERE boards_id = 4 
-                                            ORDER BY created_at DESC
-                                            LIMIT " . $limit);
-                        $date = new DateTime($reponse['created_at']);
-                        echo '<div class="list-group">';
-                        include 'creaTopic.php';
-                        while($reponse = $sql->fetch()){
-                            echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
-                            echo '<div class="row row-cols-2">';
-                            echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
-                            echo '<div class="col">' . $date->format('H:m d/m/Y') . '</div>';
-                            echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
-                            echo '</div>';
-                            echo '</a>';
-                        }
-                        echo '</div>';
-                        break;
-                    default:
-                        $sql = $pdo->query("SELECT * 
-                                            FROM users 
-                                            INNER JOIN topics 
-                                            ON users.id = topics.users_id 
-                                            WHERE boards_id = 1 
-                                            ORDER BY created_at DESC
-                                            LIMIT " . $limit);
-                        $date = new DateTime($reponse['created_at']);
-                        echo '<div class="list-group">';
-                        include 'creaTopic.php';
-                        while($reponse = $sql->fetch()){
-                            echo '<a href="topic.php?idTopic=' . $reponse['id'] . '" class="list-group-item list-group-item-action list-group-item-secondary">';
-                            echo '<div class="row row-cols-2">';
-                            echo '<div class="col text-uppercase">' . $reponse['title'] . '</div>';
-                            echo '<div class="col">' . $date->format('H:m d/m/Y') . '</div>';
-                            echo '<div class="col text-info">' . $reponse['nickname'] . '</div>';
-                            echo '</div>';
-                            echo '</a>';
-                        }
-                            echo '</div>';
-                }
-            ?>
+            <?php include 'creaTopic.php';?>
+            <div class="list-group">
+
+        <?php 
+            if($_GET['board'] == "General"){
+                $topics = getTopics($pdo, 1);
+            }elseif($_GET['board'] == "Development"){
+                $topics = getTopics($pdo, 2);
+            }elseif($_GET['board'] == "Smalltalk"){
+                $topics = getTopics($pdo, 3);
+            }elseif($_GET['board'] == "Events"){
+                $topics = getTopics($pdo, 4);
+            }else{
+                $topics = getTopics($pdo, 1);
+            }
+        ?>
+
+        <?php foreach($topics as $topic){ ?>
+                <a href="topic.php?idTopic='<?php echo $topic->id ?>'" class="list-group-item list-group-item-action list-group-item-secondary">
+                    <div class="row row-cols-2">
+                        <div class="col text-uppercase"><?php echo $topic->title ?></div>
+                        <div class="col"><?php $date = new DateTime($topic->created_at); echo $date->format('H:m d/m/Y') ?></div>
+                        <div class="col text-info"><?php echo $topic->nickname ?></div>
+                    </div>
+                </a>
+        <?php } ?>
+
+            </div>
         </div>
     </script>
         <!-- Bootstrap JS -->
