@@ -101,7 +101,7 @@ $sth = null;
     <!-- Emoji Picker -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="lib/css/emoji.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link href="style/style.css" rel="stylesheet" type="text/css" />
     <title>BCBB</title>
 </head>
 
@@ -115,7 +115,7 @@ $sth = null;
             <div class="col-md-2 border-right p-5">
                 <img src="<?php echo get_gravatar($topic->email); ?>" class="img-thumbnail">
                 <p class="text-center mt-4 font-weight-bold"><?php echo $topic->nickname ?></p>
-                <p class="text-center">Sujet créé le <?php echo $topic->created_at ?></p>
+                <p class="text-center">Topic created <?php echo $topic->created_at ?></p>
             </div>
             <div class="col p-5">
                 <p><?php echo $topic->content ?></p>
@@ -127,10 +127,10 @@ $sth = null;
     <?php if (isset($_SESSION['idUser'])) { ?>
 
         <section class="container mt-5">
-            <h3 class="mb-5">Votre Message</h3>
+            <h3 class="mb-5">Your Message</h3>
             <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row emoji-picker-container">
                 <textarea type="text" class="form-control" name="content" placeholder="Message" rows="5" data-emojiable="true"></textarea>
-                <button type="submit" name="addMessage" class="btn btn-secondary mt-3">Envoyer</button>
+                <button type="submit" name="addMessage" class="btn btn-secondary mt-3">Send</button>
             </form>
         </section>
 
@@ -166,7 +166,7 @@ $sth = null;
 
                         <?php } ?>
                     <?php } else { ?>
-                        <p>Le message a été supprimé !!</p>
+                        <p>Message has been deleted !!</p>
                     <?php } ?>
 
                 </div>

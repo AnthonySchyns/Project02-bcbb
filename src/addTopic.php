@@ -28,13 +28,13 @@ if (isset($_POST['addTopic'])) {
     $allowed = array('jpg', 'jpeg', 'png');
 
     if (!(in_array($fileActualExt, $allowed))) {
-        array_push($errors, "Vous devez utiliser une image de type jpg, jpeg ou png");
+        array_push($errors, "You must use a jpg, jpeg or png type image");
     }
     if (!($fileError === 0)) {
-        array_push($errors, "Il y a eu une erreur lors du téléchargement du fichier");
+        array_push($errors, "There was an error downloading the file");
     }
     if ($fileSize >= 1000000) {
-        array_push($errors, "Erreur : la taille du fichier est supérieure à 1 MB");
+        array_push($errors, "Error: file size is greater than 1 MB");
     }
     if ($fileSize === 0) {
         $errors = array();
@@ -68,7 +68,7 @@ $sth = null;
 
 ?>
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -113,7 +113,7 @@ $sth = null;
 
                         </select>
                     </div>
-                    <button type="submit" name="addTopic" class="btn btn-secondary mt-3">Envoyer</button>
+                    <button type="submit" name="addTopic" class="btn btn-secondary mt-3">Send</button>
                     <?php if (count($errors) > 0) : ?>
                         <?php foreach ($errors as $error) : ?>
                             <p class="error font-weight-bold text-danger mt-4" style="font-size:10px">
