@@ -154,22 +154,6 @@ $sth = null;
                 </div>
                 <div class="col p-5">
 
-<<<<<<< HEAD
-            <?php if ($message->deleted_at == null) {?>
-                <?php if ($_POST['update'] == $message->id) {?>
-                    <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row emoji-picker-container">
-                        <textarea type="text" class="form-control" name="content" rows="10" data-emojiable="true"><?php echo $message->content ?></textarea>
-                        <button type="submit" name="sendUpdate" value="<?php echo $message->id ?>" class="btn btn-secondary mt-3">Modifier</button>
-                    </form>
-                <?php } else {?>
-                    <p><?php $Parsedown = new Parsedown();
-                            echo $Parsedown->text($message->content); ?></p>
-                    <p class="text-right"><?php $date = new DateTime($message->updated_at); echo $date->format('H:m d/m/Y') ?></p>
-                <?php }?>
-            <?php } else {?>
-                    <p>Le message a été supprimé !!</p>
-            <?php }?>
-=======
                     <?php if ($message->deleted_at == null) { ?>
                         <?php if ($_POST['update'] == $message->id) { ?>
                             <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row emoji-picker-container">
@@ -190,7 +174,6 @@ $sth = null;
                     <?php } else { ?>
                         <p>Le message a été supprimé !!</p>
                     <?php } ?>
->>>>>>> 33696bfe687df8016759e938595a7803f05a2f20
 
                 </div>
                 <div class="col-1 d-flex flex-column justify-content-around align-items-center">
