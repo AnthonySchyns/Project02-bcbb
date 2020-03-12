@@ -116,17 +116,15 @@ $sth = null;
             <div class="col-md-2 border-right p-5">
                 <img src="<?php echo get_gravatar($topic->email); ?>" class="img-thumbnail">
                 <p class="text-center mt-4 font-weight-bold"><?php echo $topic->nickname ?></p>
+                <p class="text-center">Topic created<br /><?php $date = new DateTime($topic->created_at);
+                                                            echo $date->format('H:m d/m/Y') ?></p>
             </div>
             <div class="col p-5">
                 <p><?php echo $topic->content ?></p>
-                <p class="text-right"><?php $date = new DateTime($topic->created_at);
-                                        echo $date->format('H:m d/m/Y') ?></p>
+                <?php if ($topic->image !== null) : ?>
+                    <img src="<?php echo $topic->image ?>" style="width:300px; height:250px" class="mt-4" />
+                <?php endif ?>
             </div>
-        </div>
-        <div class="col p-5">
-            <p><?php echo $topic->content ?></p>
-            <img src="<?php echo $topic->image ?>" style="width:300px; height:250px" class="mt-4" />
-        </div>
         </div>
     </section>
 
