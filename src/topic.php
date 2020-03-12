@@ -59,20 +59,26 @@ $sth->closeCursor();
 $sth = null;
 
 // Add Message
+$errors = array();
 if (isset($_POST['addMessage'])) {
-    $content = $_POST['content'];
+    $content = trim(addslashes($_POST['content']));
     date_default_timezone_set('Europe/Brussels');
     $dateTime = date("Y-m-d H:i:s");
     $user = $_SESSION["idUser"];
 
-    $sqlAjout = "INSERT INTO messages "
-        . "SET content = '$content', "
-        . "created_at = '$dateTime', "
-        . "updated_at = '$dateTime', "
-        . "users_id = '$user', "
-        . "topics_id = '$idTopic' ";
+    if (empty($content)) {
+        array_push($errors, "You can't send en empty message !");
+    }
+    if (count($errors) === 0) {
+        $sqlAjout = "INSERT INTO messages "
+            . "SET content = '$content', "
+            . "created_at = '$dateTime', "
+            . "updated_at = '$dateTime', "
+            . "users_id = '$user', "
+            . "topics_id = '$idTopic' ";
 
-    $pdo->exec($sqlAjout);
+        $pdo->exec($sqlAjout);
+    }
 }
 
 // Get Messages
@@ -131,7 +137,16 @@ $sth = null;
     <?php if (isset($_SESSION['idUser'])) { ?>
 
         <section class="container mt-5">
-            <h3 class="mb-5">Your Message</h3>
+            <h3 class="mb-5">
+                Your Message
+                <?php if (count($errors) > 0) : ?>
+                    <?php foreach ($errors as $error) : ?>
+                        <span class="error font-weight-bold text-danger ml-2" style="font-size:10px">
+                            <?php echo $error ?>
+                        </span>
+                    <?php endforeach ?>
+                <?php endif ?>
+            </h3>
             <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row emoji-picker-container">
                 <textarea type="text" class="form-control" name="content" placeholder="Message" rows="5" data-emojiable="true"></textarea>
                 <button type="submit" name="addMessage" class="btn btn-secondary mt-3">Send</button>

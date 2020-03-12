@@ -8,9 +8,10 @@ if (!isset($_SESSION['idUser'])) {
 require_once 'connexion.php';
 // Add Message
 $errors = array();
+$errorsEmpty = array();
 if (isset($_POST['addTopic'])) {
-    $title = $_POST['title'];
-    $content = $_POST['content'];
+    $title = trim(addslashes($_POST['title']));
+    $content = trim(addslashes($_POST['content']));
     $idBoards = $_POST['idBoards'];
     date_default_timezone_set('Europe/Brussels');
     $dateTime = date("Y-m-d H:i:s");
@@ -26,7 +27,12 @@ if (isset($_POST['addTopic'])) {
     $fileActualExt = strtolower(end($fileExt));
 
     $allowed = array('jpg', 'jpeg', 'png');
-
+    if (empty($title)) {
+        array_push($errorsEmpty, "Title required");
+    }
+    if (empty($content)) {
+        array_push($errorsEmpty, "Content required");
+    }
     if (!(in_array($fileActualExt, $allowed))) {
         array_push($errors, "You must use a jpg, jpeg or png type image");
     }
@@ -39,7 +45,7 @@ if (isset($_POST['addTopic'])) {
     if ($fileSize === 0) {
         $errors = array();
     }
-    if (count($errors) === 0) {
+    if (count($errors) === 0 && count($errorsEmpty) === 0) {
         $sqlAjout = "INSERT INTO topics "
             . "SET title = '$title', "
             . "content = '$content', "
@@ -93,11 +99,33 @@ $sth = null;
             <div class="col p-5">
                 <form action="addtopic.php" method="post" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="title">Title</label>
+                        <label for="title">
+                            Title
+                            <?php if (count($errorsEmpty) > 0) : ?>
+                                <?php foreach ($errorsEmpty as $error) : ?>
+                                    <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
+                                        <?php if ($error === "Title required") : ?>
+                                            <?php echo $error ?>
+                                        <?php endif ?>
+                                    </span>
+                                <?php endforeach ?>
+                            <?php endif ?>
+                        </label>
                         <input type="text" class="form-control" name="title" placeholder="Title">
                     </div>
                     <div class="form-group">
-                        <label for="title">Message</label>
+                        <label for="title">
+                            Message
+                            <?php if (count($errorsEmpty) > 0) : ?>
+                                <?php foreach ($errorsEmpty as $error) : ?>
+                                    <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
+                                        <?php if ($error === "Content required") : ?>
+                                            <?php echo $error ?>
+                                        <?php endif ?>
+                                    </span>
+                                <?php endforeach ?>
+                            <?php endif ?>
+                        </label>
                         <textarea type="text" class="form-control" name="content" placeholder="Message" rows="5"></textarea>
                     </div>
                     <div class="custom-file">
