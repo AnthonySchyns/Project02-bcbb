@@ -14,6 +14,7 @@ if (isset($_POST['del'])) {
     date_default_timezone_set('Europe/Brussels');
     $dateTime = date("Y-m-d H:i:s");
     $idMessage = $_POST['del'];
+
     $sqlDelete = "UPDATE messages "
         . "SET deleted_at = '" . $dateTime . "' "
         . "WHERE id = '" . $idMessage . "'";
@@ -30,6 +31,7 @@ if (isset($_POST['sendUpdate'])) {
     $dateTime = date("Y-m-d H:i:s");
     $idMessage = $_POST['sendUpdate'];
     $content = $_POST['content'];
+
     $sqlUpdate = "UPDATE messages "
         . "SET content = '" . $content . "', "
         . "updated_at = '" . $dateTime . "' "
@@ -49,6 +51,7 @@ $sql = "SELECT * "
     . "INNER JOIN users "
     . "ON users.id = topics.users_id "
     . "WHERE topics.id = $idTopic";
+
 $sth = $pdo->prepare($sql);
 $sth->execute();
 $topic = $sth->fetch(PDO::FETCH_OBJ);
@@ -77,7 +80,8 @@ $sql = "SELECT * "
     . "FROM users "
     . "INNER JOIN messages "
     . "ON users.id = messages.users_id "
-    . "WHERE topics_id = $idTopic";
+    . "WHERE topics_id = $idTopic "
+    . "ORDER BY updated_at DESC";
 $sth = $pdo->prepare($sql);
 $sth->execute();
 $messages = $sth->fetchAll(PDO::FETCH_OBJ);
@@ -94,9 +98,6 @@ $sth = null;
 
     <!-- Fontawesome  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous" />
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <!-- Emoji Picker -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
@@ -115,12 +116,17 @@ $sth = null;
             <div class="col-md-2 border-right p-5">
                 <img src="<?php echo get_gravatar($topic->email); ?>" class="img-thumbnail">
                 <p class="text-center mt-4 font-weight-bold"><?php echo $topic->nickname ?></p>
-                <p class="text-center">Topic created <?php echo $topic->created_at ?></p>
             </div>
             <div class="col p-5">
                 <p><?php echo $topic->content ?></p>
-                <img src="<?php echo $topic->image ?>" style="width:300px; height:250px" class="mt-4" />
+                <p class="text-right"><?php $date = new DateTime($topic->created_at);
+                                        echo $date->format('H:m d/m/Y') ?></p>
             </div>
+        </div>
+        <div class="col p-5">
+            <p><?php echo $topic->content ?></p>
+            <img src="<?php echo $topic->image ?>" style="width:300px; height:250px" class="mt-4" />
+        </div>
         </div>
     </section>
 
