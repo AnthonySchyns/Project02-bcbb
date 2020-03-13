@@ -16,18 +16,24 @@ if (isset($_POST['submit'])) {
     $password = trim(addslashes($_POST['password']));
     $password2 = trim(addslashes($_POST['password2']));
     // gestion des erreurs
-    if (empty($nickname)) {array_push($errors, "Pseudo requis");}
-    if (empty($email)) {array_push($errors, "Email requis");}
-    if (empty($password)) {array_push($errors, "Mot de passe requis");}
+    if (empty($nickname)) {
+        array_push($errors, "Nickname required");
+    }
+    if (empty($email)) {
+        array_push($errors, "Email required");
+    }
+    if (empty($password)) {
+        array_push($errors, "Password required");
+    }
     if ($password != $password2) {
-        array_push($errors, "Les deux mots de passe ne correspondent pas");
+        array_push($errors, "Passwords don't match");
     }
     foreach ($users as $user) {
         if ($email === $user->email) {
-            array_push($errors, "L'email existe déjà");
+            array_push($errors, "Email already exists");
         }
         if ($nickname === $user->nickname) {
-            array_push($errors, "Ce pseudo existe déjà");
+            array_push($errors, "Nickname already exists");
         }
     }
     // création de l'utilisateur dans la base de donnée
@@ -54,43 +60,45 @@ if (isset($_POST['submit'])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="style/style.css" type="text/css"/>
-        <title>Sign Up</title>
-    </head>
-    <body>
-        <?php
-            include 'menu.php';
-        ?>
-        <div class="container">
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/style.css" type="text/css" />
+    <title>Sign Up</title>
+</head>
+
+<body>
+    <?php
+    include 'menu.php';
+    ?>
+    <div class="container">
         <h3 class="text-center mt-5 pt-5 mb-5">Register</h3>
         <form action="register.php" method="post">
             <div class="form-group row justify-content-center">
                 <div class="col-sm-5">
-                <label for="email">
-                    Email
-                    <!-- Affichange erreur email requis-->
-                    <?php if (count($errors) > 0): ?>
-                        <?php foreach ($errors as $error): ?>
-                            <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
-                                <?php
-if ($error === "Email requis") {
-    echo $error;
-}
+                    <label for="email">
+                        Email
+                        <!-- Affichange erreur Email required-->
+                        <?php if (count($errors) > 0) : ?>
+                            <?php foreach ($errors as $error) : ?>
+                                <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
+                                    <?php
+                                    if ($error === "Email required") {
+                                        echo $error;
+                                    }
 
-if ($error === "L'email existe déjà") {
-    echo $error;
-}
+                                    if ($error === "Email already exists") {
+                                        echo $error;
+                                    }
 
-?>
-                            </span>
-                        <?php endforeach?>
-                    <?php endif?>
-                    <!-- Affichange erreur email requis-->
-                </label>
+                                    ?>
+                                </span>
+                            <?php endforeach ?>
+                        <?php endif ?>
+                        <!-- Affichange erreur Email required-->
+                    </label>
                     <input type="email" class="form-control" id="email" placeholder="example@example.com" name="email">
                 </div>
 
@@ -98,27 +106,27 @@ if ($error === "L'email existe déjà") {
             <div class="form-group row justify-content-center">
                 <div class="col-sm-5">
                     <label for="nickname">
-                        Pseudo
-                        <!-- Affichange erreur pseudo requis-->
-                    
-                        <?php if (count($errors) > 0): ?>
-                            <?php foreach ($errors as $error): ?>
+                        Nickname
+                        <!-- Affichange erreur Nickname required-->
+
+                        <?php if (count($errors) > 0) : ?>
+                            <?php foreach ($errors as $error) : ?>
                                 <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
                                     <?php
-if ($error === "Pseudo requis") {
-    echo $error;
-}
+                                    if ($error === "Nickname required") {
+                                        echo $error;
+                                    }
 
-if ($error === "Ce pseudo existe déjà") {
-    echo $error;
-}
+                                    if ($error === "Nickname already exists") {
+                                        echo $error;
+                                    }
 
-?>
+                                    ?>
                                 </span>
-                            <?php endforeach?>
-                        <?php endif?>
-                    
-                        <!-- Affichange erreur pseudo requis-->
+                            <?php endforeach ?>
+                        <?php endif ?>
+
+                        <!-- Affichange erreur Nickname required-->
                     </label>
                     <input type="text" class="form-control" id="nickname" placeholder="example55" name="nickname">
                 </div>
@@ -126,24 +134,24 @@ if ($error === "Ce pseudo existe déjà") {
             <div class="form-group row justify-content-center">
                 <div class="col-sm-5">
                     <label for="password">
-                        Mot de passe
+                        Password
                         <!-- Affichange erreur mdp requis-->
-                        <?php if (count($errors) > 0): ?>
-                            <?php foreach ($errors as $error): ?>
+                        <?php if (count($errors) > 0) : ?>
+                            <?php foreach ($errors as $error) : ?>
                                 <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
                                     <?php
-if ($error === "Mot de passe requis") {
-    echo $error;
-}
+                                    if ($error === "Password required") {
+                                        echo $error;
+                                    }
 
-if ($error === "Les deux mots de passe ne correspondent pas") {
-    echo $error;
-}
+                                    if ($error === "Passwords don't match") {
+                                        echo $error;
+                                    }
 
-?>
+                                    ?>
                                 </span>
-                            <?php endforeach?>
-                        <?php endif?>
+                            <?php endforeach ?>
+                        <?php endif ?>
                         <!-- Affichange erreur mdp requis-->
                     </label>
                     <input type="password" class="form-control" id="password" name="password">
@@ -152,20 +160,19 @@ if ($error === "Les deux mots de passe ne correspondent pas") {
             <div class="form-group row justify-content-center">
                 <div class="col-sm-5">
                     <label for="password2">
-                        Confirmer mot de passe
+                        Confirm password
                         <!-- Affichange erreur mdp x 2-->
-                        <?php if (count($errors) > 0): ?>
-                            <?php foreach ($errors as $error): ?>
+                        <?php if (count($errors) > 0) : ?>
+                            <?php foreach ($errors as $error) : ?>
                                 <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
                                     <?php
-if ($error === "Les deux mots de passe ne correspondent pas") {
-    echo $error
-    ;
-}
-?>
+                                    if ($error === "Passwords don't match") {
+                                        echo $error;
+                                    }
+                                    ?>
                                 </span>
-                            <?php endforeach?>
-                        <?php endif?>
+                            <?php endforeach ?>
+                        <?php endif ?>
                         <!-- Affichange erreur mdp x 2-->
                     </label>
                     <input type="password" class="form-control" id="password2" name="password2">
@@ -175,10 +182,11 @@ if ($error === "Les deux mots de passe ne correspondent pas") {
                 <button id="submit" type="submit" class="btn btn-secondary" name="submit">Register</button>
             </div>
         </form>
-        </div>
-        <!-- Bootstrap JS -->
-        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    </body>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+
 </html>
