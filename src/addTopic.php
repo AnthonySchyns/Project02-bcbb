@@ -60,7 +60,7 @@ $sth = null;
         <section class="container mt-5">
             <div class="row border">
                 <div class="col p-5">
-                    <form action="addtopic.php" method="post">
+                    <form action="addTopic.php" method="post">
                         <div class="form-group">
                             <label for="title">Title</label>
                             <input type="text" class="form-control" name="title" placeholder="Title">
