@@ -97,7 +97,7 @@ $sth = null;
     <section class="container mt-5">
         <div class="row border">
             <div class="col p-5">
-                <form action="addtopic.php" method="post" enctype="multipart/form-data">
+                <form action="addTopic.php" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="title">
                             Title
