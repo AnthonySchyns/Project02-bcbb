@@ -82,6 +82,9 @@ $sth = null;
 
     <!-- Fontawesome  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="style/style.css" rel="stylesheet" type="text/css" />
     <title>BCBB</title>
 </head>
@@ -94,34 +97,34 @@ $sth = null;
     <section class="container mt-5">
         <div class="row border">
             <div class="col p-5">
-                <form action="addtopic.php" method="post" enctype="multipart/form-data">
+                <form action="addTopic.php" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="title">
                             Title
-                            <?php if (count($errorsEmpty) > 0){ ?>
-                                <?php foreach ($errorsEmpty as $error){ ?>
+                            <?php if (count($errorsEmpty) > 0) : ?>
+                                <?php foreach ($errorsEmpty as $error) : ?>
                                     <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
-                                        <?php if ($error === "Title required"){ ?>
+                                        <?php if ($error === "Title required") : ?>
                                             <?php echo $error ?>
-                                        <?php } ?>
+                                        <?php endif ?>
                                     </span>
-                                <?php } ?>
-                            <?php } ?>
+                                <?php endforeach ?>
+                            <?php endif ?>
                         </label>
                         <input type="text" class="form-control" name="title" placeholder="Title">
                     </div>
                     <div class="form-group">
                         <label for="title">
                             Message
-                            <?php if (count($errorsEmpty) > 0){ ?>
-                                <?php foreach ($errorsEmpty as $error){ ?>
+                            <?php if (count($errorsEmpty) > 0) : ?>
+                                <?php foreach ($errorsEmpty as $error) : ?>
                                     <span class="error text-center font-weight-bold text-danger ml-1" style="font-size:10px">
-                                        <?php if ($error === "Content required"){ ?>
+                                        <?php if ($error === "Content required") : ?>
                                             <?php echo $error ?>
-                                        <?php } ?>
+                                        <?php endif ?>
                                     </span>
-                                <?php } ?>
-                            <?php } ?>
+                                <?php endforeach ?>
+                            <?php endif ?>
                         </label>
                         <textarea type="text" class="form-control" name="content" placeholder="Message" rows="5"></textarea>
                     </div>
@@ -139,13 +142,13 @@ $sth = null;
                         </select>
                     </div>
                     <button type="submit" name="addTopic" class="btn btn-secondary mt-3">Send</button>
-                    <?php if (count($errors) > 0){ ?>
-                        <?php foreach ($errors as $error){ ?>
+                    <?php if (count($errors) > 0) : ?>
+                        <?php foreach ($errors as $error) : ?>
                             <p class="error font-weight-bold text-danger mt-4" style="font-size:10px">
                                 <?php echo $error ?>
                             </p>
-                        <?php } ?>
-                    <?php } ?>
+                        <?php endforeach ?>
+                    <?php endif ?>
                 </form>
                 <p><?php echo $topic->content ?></p>
                 <p class="text-right"><?php echo $topic->updated_at ?></p>
