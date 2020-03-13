@@ -2,10 +2,10 @@
 
 // CONNEXION A LA BD  -----------------------------------------------
 // Paramètres de connexion au serveur de données
-$host = 'mysql';
-$user = 'root';
-$pass = 'root';
-$dbname = 'mydb';
+$host = 'g4yltwdo6z0izlm6.chr7pe7iynqr.eu-west-1.rds.amazonaws.com';
+$user = 'jq40hf89z7u7twye';
+$pass = 'm9jkd42kgd42d587';
+$dbname = 'y1kfbq0yhsa094o5';
 
 $dsn = "mysql:host=$host;dbname=$dbname";
 
