@@ -16,7 +16,7 @@ if (isset($_POST['submit'])) {
   $signature = trim(addslashes($_POST['signature']));
   // Erreurs
   if ($password != $password2) {
-    array_push($errors, "Modification annulée : les deux mots de passe ne correspondaient pas");
+    array_push($errors, "Change canceled: the two passwords did not match");
   }
   $sql = "SELECT * "
     . " FROM users WHERE id != '" . $_SESSION['idUser'] . "'";
@@ -27,7 +27,7 @@ if (isset($_POST['submit'])) {
   $sth = null;
   foreach ($users as $user) {
     if ($nickname === $user->nickname) {
-      array_push($errors, "Modification annulée : pseudo déjà existant");
+      array_push($errors, "Modification canceled: nickname already existing");
     }
   }
   // Modifications des données dans la base de données
@@ -50,15 +50,14 @@ if (isset($_POST['submit'])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
-  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link href="style/style.css" rel="stylesheet" type="text/css" />
   <title>Profile</title>
 </head>
 
@@ -74,7 +73,7 @@ if (isset($_POST['submit'])) {
         <img src="<?php echo $src ?>" class="rounded-circle" />
       </div>
       <div class="form-group d-flex justify-content-center mt-3 pt-4">
-        <a href="https://fr.gravatar.com/emails/" target="_blank" class="btn btn-secondary">Modifier avatar</a>
+        <a href="https://fr.gravatar.com/emails/" target="_blank" class="btn btn-secondary">Modify avatar</a>
       </div>
       <div class="form-group row mt-5">
         <label for="new_email" class="col-sm-2 col-form-label">Email :</label>
@@ -83,19 +82,19 @@ if (isset($_POST['submit'])) {
         </div>
       </div>
       <div class="form-group row mt-5">
-        <label for="new_nickname" class="col-sm-2 col-form-label">Pseudo :</label>
+        <label for="new_nickname" class="col-sm-2 col-form-label">Nickname :</label>
         <div class="col-sm-10">
           <input type="text" name="new_nickname" id="new_nickname" class="form-control" value="<?php echo $useru->nickname ?>" required />
         </div>
       </div>
       <div class="form-group row mt-5">
-        <label for="new_password" class="col-sm-2 col-form-label">Mot de passe :</label>
+        <label for="new_password" class="col-sm-2 col-form-label">Password :</label>
         <div class="col-sm-10">
           <input type="password" name="new_password" id="new_password" class="form-control" value="" />
         </div>
       </div>
       <div class="form-group row mt-5">
-        <label for="confirmer" class="col-sm-2 col-form-label">Confirmer :</label>
+        <label for="confirmer" class="col-sm-2 col-form-label">Confirm :</label>
         <div class="col-sm-10">
           <input type="password" name="confirmer" id="confirmer" class="form-control" value="" />
         </div>
@@ -109,17 +108,17 @@ if (isset($_POST['submit'])) {
         </div>
       </div>
       <div class="form-group mt-5 pb-3 d-flex justify-content-center">
-        <input type="submit" name="submit" value="Valider" id="valider" class="btn btn-secondary justify-content-center" />
+        <input type="submit" name="submit" value="Validate" id="valider" class="btn btn-secondary justify-content-center" />
       </div>
       <?php if (count($errors) > 0) : ?>
         <?php foreach ($errors as $error) : ?>
           <p class="error text-center font-weight-bold text-danger mt-O" style="font-size:10px">
             <?php
-            if ($error === "Modification annulée : les deux mots de passe ne correspondaient pas") {
+            if ($error === "Change canceled: the two passwords did not match") {
               echo $error;
             }
 
-            if ($error === "Modification annulée : pseudo déjà existant") {
+            if ($error === "Modification canceled: nickname already existing") {
               echo $error;
             }
 

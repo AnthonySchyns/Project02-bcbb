@@ -1,12 +1,12 @@
 <?php
 
-    require_once('connexion.php');
+require_once('connexion.php');
 
-    session_start();
+session_start();
 
-    $board .= $_SERVER['REQUEST_URI'];
+$board .= $_SERVER['REQUEST_URI'];
 
-    $limit = 3;
+$limit = 3;
 
 // Get Boards
 $sql = "SELECT * "
@@ -18,7 +18,8 @@ $sth->closeCursor();
 $sth = null;
 
 // Get Topics
-function getTopics(PDO $pdo, $a){
+function getTopics(PDO $pdo, $a)
+{
     $sql = "SELECT * "
         . "FROM users "
         . "INNER JOIN topics "
@@ -77,30 +78,32 @@ function getDescription(PDO $pdo, $i){
         <?php 
             if($_GET['board'] == "General"){
                 $topics = getTopics($pdo, 1);
-            }elseif($_GET['board'] == "Development"){
+            } elseif ($_GET['board'] == "Development") {
                 $topics = getTopics($pdo, 2);
-            }elseif($_GET['board'] == "Smalltalk"){
+            } elseif ($_GET['board'] == "Smalltalk") {
                 $topics = getTopics($pdo, 3);
-            }elseif($_GET['board'] == "Events"){
+            } elseif ($_GET['board'] == "Events") {
                 $topics = getTopics($pdo, 4);
-            }else{
+            } else {
                 $topics = getTopics($pdo, 1);
             }
-        ?>
+            ?>
 
-        <?php foreach($topics as $topic){ ?>
+            <?php foreach ($topics as $topic) { ?>
                 <a href="topic.php?idTopic='<?php echo $topic->id ?>'" class="list-group-item list-group-item-action list-group-item-secondary">
                     <div class="row row-cols-2">
                         <div class="col text-uppercase"><?php echo $topic->title ?></div>
-                        <div class="col"><?php $date = new DateTime($topic->created_at); echo $date->format('H:m d/m/Y') ?></div>
+                        <div class="col"><?php $date = new DateTime($topic->created_at);
+                                            echo $date->format('H:m d/m/Y') ?></div>
                         <div class="col text-info"><?php echo $topic->nickname ?></div>
                     </div>
                 </a>
-        <?php } ?>
+            <?php } ?>
 
-            </div>
         </div>
+    </div>
     </script>
+<<<<<<< HEAD
         <!-- Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -109,3 +112,13 @@ function getDescription(PDO $pdo, $i){
         <script src="js/scrollBar.js"></script>
     </body>
 </html>
+=======
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <script src="js/scrollBar.js">
+        < /body> <
+        /html>
+>>>>>>> 6d5aa604f32699da1fd05d585acd8bc6f932226f

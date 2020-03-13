@@ -59,20 +59,26 @@ $sth->closeCursor();
 $sth = null;
 
 // Add Message
+$errors = array();
 if (isset($_POST['addMessage'])) {
-    $content = $_POST['content'];
+    $content = trim(addslashes($_POST['content']));
     date_default_timezone_set('Europe/Brussels');
     $dateTime = date("Y-m-d H:i:s");
     $user = $_SESSION["idUser"];
 
-    $sqlAjout = "INSERT INTO messages "
-        . "SET content = '$content', "
-        . "created_at = '$dateTime', "
-        . "updated_at = '$dateTime', "
-        . "users_id = '$user', "
-        . "topics_id = '$idTopic' ";
+    if (empty($content)) {
+        array_push($errors, "You can't send en empty message !");
+    }
+    if (count($errors) === 0) {
+        $sqlAjout = "INSERT INTO messages "
+            . "SET content = '$content', "
+            . "created_at = '$dateTime', "
+            . "updated_at = '$dateTime', "
+            . "users_id = '$user', "
+            . "topics_id = '$idTopic' ";
 
-    $pdo->exec($sqlAjout);
+        $pdo->exec($sqlAjout);
+    }
 }
 
 // Get Messages
@@ -90,42 +96,40 @@ $sth = null;
 
 ?>
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- Fontawesome  -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"
-            integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous" />
+    <!-- Fontawesome  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous" />
 
-        <!-- Emoji Picker -->
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-        <link href="lib/css/emoji.css" rel="stylesheet">
-        <link href="style/style.css" rel="stylesheet" type="text/css"/>
-        <title>BCBB</title>
-    </head>
+    <!-- Emoji Picker -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="lib/css/emoji.css" rel="stylesheet">
+    <link href="style/style.css" rel="stylesheet" type="text/css" />
+    <title>BCBB</title>
+</head>
 
-    <body>
-        <?php
-            include 'menu.php';
-        ?>
-        <h1 class="text-center mt-5 pt-5"><?php echo $topic->title ?></h1>
-        <section class="container mt-5">
-            <div class="row border">
-                <div class="col-md-2 border-right p-5">
-                    <img src="<?php echo get_gravatar($topic->email); ?>" class="img-thumbnail">
-                    <p class="text-center mt-4 font-weight-bold"><?php echo $topic->nickname ?></p>
-                </div>
-                <div class="col p-5">
-                    <p><?php echo $topic->content ?></p>
-                    <p class="text-right"><?php $date = new DateTime($topic->created_at); echo $date->format('H:m d/m/Y') ?></p>
-                </div>
+<body>
+    <?php
+    include 'menu.php';
+    ?>
+    <h1 class="text-center mt-5 pt-5"><?php echo $topic->title ?></h1>
+    <section class="container mt-5">
+        <div class="row border">
+            <div class="col-md-2 border-right p-5">
+                <img src="<?php echo get_gravatar($topic->email); ?>" class="img-thumbnail">
+                <p class="text-center mt-4 font-weight-bold"><?php echo $topic->nickname ?></p>
+                <p class="text-center">Topic created<br /><?php $date = new DateTime($topic->created_at);
+                                                            echo $date->format('H:m d/m/Y') ?></p>
             </div>
             <div class="col p-5">
                 <p><?php echo $topic->content ?></p>
-                <img src="<?php echo $topic->image ?>" style="width:300px; height:250px" class="mt-4" />
+                <?php if ($topic->image !== null) : ?>
+                    <img src="<?php echo $topic->image ?>" style="width:300px; height:250px" class="mt-4" />
+                <?php endif ?>
             </div>
         </div>
     </section>
@@ -133,10 +137,19 @@ $sth = null;
     <?php if (isset($_SESSION['idUser'])) { ?>
 
         <section class="container mt-5">
-            <h3 class="mb-5">Votre Message</h3>
+            <h3 class="mb-5">
+                Your Message
+                <?php if (count($errors) > 0) : ?>
+                    <?php foreach ($errors as $error) : ?>
+                        <span class="error font-weight-bold text-danger ml-2" style="font-size:10px">
+                            <?php echo $error ?>
+                        </span>
+                    <?php endforeach ?>
+                <?php endif ?>
+            </h3>
             <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row emoji-picker-container">
                 <textarea type="text" class="form-control" name="content" placeholder="Message" rows="5" data-emojiable="true"></textarea>
-                <button type="submit" name="addMessage" class="btn btn-secondary mt-3">Envoyer</button>
+                <button type="submit" name="addMessage" class="btn btn-secondary mt-3">Send</button>
             </form>
         </section>
 
@@ -154,22 +167,6 @@ $sth = null;
                 </div>
                 <div class="col p-5">
 
-<<<<<<< HEAD
-            <?php if ($message->deleted_at == null) {?>
-                <?php if ($_POST['update'] == $message->id) {?>
-                    <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row emoji-picker-container">
-                        <textarea type="text" class="form-control" name="content" rows="10" data-emojiable="true"><?php echo $message->content ?></textarea>
-                        <button type="submit" name="sendUpdate" value="<?php echo $message->id ?>" class="btn btn-secondary mt-3">Modifier</button>
-                    </form>
-                <?php } else {?>
-                    <p><?php $Parsedown = new Parsedown();
-                            echo $Parsedown->text($message->content); ?></p>
-                    <p class="text-right"><?php $date = new DateTime($message->updated_at); echo $date->format('H:m d/m/Y') ?></p>
-                <?php }?>
-            <?php } else {?>
-                    <p>Le message a été supprimé !!</p>
-            <?php }?>
-=======
                     <?php if ($message->deleted_at == null) { ?>
                         <?php if ($_POST['update'] == $message->id) { ?>
                             <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row emoji-picker-container">
@@ -188,9 +185,8 @@ $sth = null;
 
                         <?php } ?>
                     <?php } else { ?>
-                        <p>Le message a été supprimé !!</p>
+                        <p>Message has been deleted !!</p>
                     <?php } ?>
->>>>>>> 33696bfe687df8016759e938595a7803f05a2f20
 
                 </div>
                 <div class="col-1 d-flex flex-column justify-content-around align-items-center">
