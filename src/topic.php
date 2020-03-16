@@ -7,7 +7,25 @@ require_once 'connexion.php';
 // Markdown
 require('lib/Parsedown.php');
 
-$path = $_GET['idTopic'];
+$idTopic = $_GET['idTopic'];
+
+// Toggle Lock Topic
+if (isset($_POST['lock'])) {
+    if($_POST['lock'] == 1){
+        $sqlUpdate = "UPDATE topics "
+                    . "SET lockTopic = 1 "
+                    . "WHERE id = " . $idTopic;
+    } else{
+        $sqlUpdate = "UPDATE topics "
+                    . "SET lockTopic = 0 "
+                    . "WHERE id = " . $idTopic;
+    }
+
+    $sth = $pdo->prepare($sqlUpdate);
+    $sth->execute();
+    $sth->closeCursor();
+    $sth = null;
+}
 
 // Del Message
 if (isset($_POST['del'])) {
@@ -44,8 +62,6 @@ if (isset($_POST['sendUpdate'])) {
 }
 
 // Get Topics
-$idTopic = $_GET['idTopic'];
-
 $sql = "SELECT * "
     . "FROM topics "
     . "INNER JOIN users "
@@ -94,6 +110,7 @@ $messages = $sth->fetchAll(PDO::FETCH_OBJ);
 $sth->closeCursor();
 $sth = null;
 
+var_dump($topic->users_id);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -122,8 +139,7 @@ $sth = null;
             <div class="col-md-2 border-right p-5">
                 <img src="<?php echo get_gravatar($topic->email); ?>" class="img-thumbnail">
                 <p class="text-center mt-4 font-weight-bold"><?php echo $topic->nickname ?></p>
-                <p class="text-center">Topic created<br /><?php $date = new DateTime($topic->created_at);
-                                                            echo $date->format('H:m d/m/Y') ?></p>
+                <p class="text-center">Topic created<br /><?php $date = new DateTime($topic->created_at); echo $date->format('H:m d/m/Y') ?></p>
             </div>
             <div class="col p-5">
                 <p><?php echo $topic->content ?></p>
@@ -131,10 +147,22 @@ $sth = null;
                     <img src="<?php echo $topic->image ?>" style="width:300px; height:250px" class="mt-4" />
                 <?php endif ?>
             </div>
+
+        <?php if(isset($_SESSION['idUser']) and $_SESSION['idUser'] == $topic->users_id){ ?>
+            <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post" class="col-1 align-self-end mb-3">
+
+            <?php if($topic->lockTopic == 0){ ?>
+                <button type="submit" name="lock" value="1" class="btn btn-outline-danger">Lock</button>
+            <?php } else{ ?>
+                <button type="submit" name="lock" value="0" class="btn btn-outline-secondary">Unlock</button>
+            <?php } ?>
+
+            </form>
+        <?php } ?>
         </div>
     </section>
 
-    <?php if (isset($_SESSION['idUser'])) { ?>
+    <?php if (isset($_SESSION['idUser']) AND $topic->lockTopic == 0) { ?>
 
         <section class="container mt-5">
             <h3 class="mb-5">
@@ -147,7 +175,7 @@ $sth = null;
                     <?php endforeach ?>
                 <?php endif ?>
             </h3>
-            <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row emoji-picker-container">
+            <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post" class="row emoji-picker-container">
                 <textarea type="text" class="form-control" name="content" placeholder="Message" rows="5" data-emojiable="true"></textarea>
                 <button type="submit" name="addMessage" class="btn btn-secondary mt-3">Send</button>
             </form>
@@ -169,7 +197,7 @@ $sth = null;
 
                     <?php if ($message->deleted_at == null) { ?>
                         <?php if ($_POST['update'] == $message->id) { ?>
-                            <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row emoji-picker-container">
+                            <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post" class="row emoji-picker-container">
                                 <textarea type="text" class="form-control" name="content" rows="10" data-emojiable="true"><?php echo $message->content ?></textarea>
                                 <button type="submit" name="sendUpdate" value="<?php echo $message->id ?>" class="btn btn-secondary mt-3">Modifier</button>
                             </form>
@@ -191,13 +219,13 @@ $sth = null;
                 </div>
                 <div class="col-1 d-flex flex-column justify-content-around align-items-center">
 
-                    <?php if (isset($_SESSION['idUser']) and $_SESSION['idUser'] == $message->users_id) { ?>
+                    <?php if ((isset($_SESSION['idUser']) and $_SESSION['idUser'] == $message->users_id) AND $topic->lockTopic == 0) { ?>
                         <?php if ($message->deleted_at == null) { ?>
                             <?php if (empty($_POST['update'])) { ?>
-                                <form action="topic.php?idTopic=<?php echo $path ?>" method="post">
+                                <form action="topic.php?idTopic=<?php echo intval($idTopic) ?>" method="post">
                                     <button type="submit" name="update" value="<?php echo $message->id ?>" class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
                                 </form>
-                                <form action="topic.php?idTopic=<?php echo $path ?>" method="post">
+                                <form action="topic.php?idTopic=<?php echo intval($idTopic) ?>" method="post">
                                     <button type="submit" name="del" value="<?php echo $message->id ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
                                 </form>
                             <?php } ?>

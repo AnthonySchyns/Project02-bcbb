@@ -10,14 +10,11 @@ $(document).ready(function() {
     var b = navbar.height();
 
     currentScrollTop = a;
-    console.log(currentScrollTop);
-    console.log(c);
     if (c < currentScrollTop && a > b + b) {
       navbar.addClass("scrollUp");
     } else if (c > currentScrollTop && !(a <= b)) {
       navbar.removeClass("scrollUp");
     }
     c = currentScrollTop;
-    console.log(c);
   });
 });
