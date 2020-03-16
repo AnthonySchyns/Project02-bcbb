@@ -93,7 +93,10 @@ if (isset($_POST['addMessage'])) {
             . "users_id = '$user', "
             . "topics_id = '$idTopic' ";
 
-        $pdo->exec($sqlAjout);
+        $sth = $pdo->prepare($sqlAjout);
+        $sth->execute();
+        $sth->closeCursor();
+        $sth = null;
     }
 }
 
