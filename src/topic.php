@@ -110,7 +110,6 @@ $messages = $sth->fetchAll(PDO::FETCH_OBJ);
 $sth->closeCursor();
 $sth = null;
 
-var_dump($messages[0]);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -222,9 +221,13 @@ var_dump($messages[0]);
                     <?php if ((isset($_SESSION['idUser']) and $_SESSION['idUser'] == $message->users_id) AND $topic->lockTopic == 0) { ?>
                         <?php if ($message->deleted_at == null) { ?>
                             <?php if (empty($_POST['update'])) { ?>
+                                <?php if ($message->id == $messages[0]->id) { ?>
+
                                 <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
                                     <button type="submit" name="update" value="<?php echo $message->id ?>" class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
                                 </form>
+
+                                <?php } ?>
                                 <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
                                     <button type="submit" name="del" value="<?php echo $message->id ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
                                 </form>
