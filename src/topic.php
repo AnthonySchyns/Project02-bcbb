@@ -110,7 +110,7 @@ $messages = $sth->fetchAll(PDO::FETCH_OBJ);
 $sth->closeCursor();
 $sth = null;
 
-var_dump($topic->users_id);
+var_dump($messages[0]);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -162,18 +162,18 @@ var_dump($topic->users_id);
         </div>
     </section>
 
-    <?php if (isset($_SESSION['idUser']) AND $topic->lockTopic == 0) { ?>
+    <?php if (isset($_SESSION['idUser']) AND $topic->lockTopic == 0 AND $messages[0]->users_id != $_SESSION['idUser']) { ?>
 
         <section class="container mt-5">
             <h3 class="mb-5">
                 Your Message
-                <?php if (count($errors) > 0) : ?>
-                    <?php foreach ($errors as $error) : ?>
+                <?php if (count($errors) > 0){ ?>
+                    <?php foreach ($errors as $error){ ?>
                         <span class="error font-weight-bold text-danger ml-2" style="font-size:10px">
                             <?php echo $error ?>
                         </span>
-                    <?php endforeach ?>
-                <?php endif ?>
+                    <?php } ?>
+                <?php } ?>
             </h3>
             <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post" class="row emoji-picker-container">
                 <textarea type="text" class="form-control" name="content" placeholder="Message" rows="5" data-emojiable="true"></textarea>
@@ -222,10 +222,10 @@ var_dump($topic->users_id);
                     <?php if ((isset($_SESSION['idUser']) and $_SESSION['idUser'] == $message->users_id) AND $topic->lockTopic == 0) { ?>
                         <?php if ($message->deleted_at == null) { ?>
                             <?php if (empty($_POST['update'])) { ?>
-                                <form action="topic.php?idTopic=<?php echo intval($idTopic) ?>" method="post">
+                                <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
                                     <button type="submit" name="update" value="<?php echo $message->id ?>" class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
                                 </form>
-                                <form action="topic.php?idTopic=<?php echo intval($idTopic) ?>" method="post">
+                                <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
                                     <button type="submit" name="del" value="<?php echo $message->id ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
                                 </form>
                             <?php } ?>
