@@ -6,8 +6,6 @@ session_start();
 
 $board .= $_SERVER['REQUEST_URI'];
 
-$limit = 3;
-
 // Get Boards
 $sql = "SELECT * "
     . "FROM boards ";
@@ -18,13 +16,15 @@ $sth->closeCursor();
 $sth = null;
 
 // Get Topics
-function getTopics(PDO $pdo, $a)
+function getTopics(PDO $pdo, $a, $limit)
 {
     $sql = "SELECT * "
         . "FROM users "
         . "INNER JOIN topics "
         . "ON users.id = topics.users_id "
-        . "WHERE boards_id = '" . $a . "'";
+        . "WHERE boards_id = '" . $a . "'"
+        . " ORDER BY created_at DESC"
+        . " LIMIT " . $limit;
     $sth = $pdo->prepare($sql);
     $sth->execute();
     return $sth->fetchAll(PDO::FETCH_OBJ);
@@ -59,7 +59,7 @@ function getDescription(PDO $pdo, $i){
         <div class="container">
             <h1 class="text-center mt-5 pt-5 mb-3">BCBB</h1>
             <ul class="nav nav-justified">
-                <li class="nav-item bg-secondary">
+                <li class="nav-item">
                     <a title="<?php getDescription($pdo, 1) ?>" class="nav-link text-white <?php if($board == "/index.php?board=General" OR $board == "/" OR $board == "/index.php"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=General">General</a>
                 </li>
                 <li class="nav-item">
@@ -71,34 +71,51 @@ function getDescription(PDO $pdo, $i){
                 <li class="nav-item">
                     <a title="<?php getDescription($pdo, 4) ?>"class="nav-link text-white <?php if($board == "/index.php?board=Events"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Events">Events</a>
                 </li>
+                <li class="nav-item">
+                    <a title="<?php getDescription($pdo, 5) ?>"class="nav-link text-white <?php if($board == "/index.php?board=Very-secret"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Very-secret">Very secret</a>
+                </li>
+                <li class="nav-item">
+                    <a title="<?php getDescription($pdo, 6) ?>"class="nav-link text-white <?php if($board == "/index.php?board=Random"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Random">Random</a>
+                </li>
             </ul>
             <?php include 'creaTopic.php';?>
             <div class="list-group">
 
         <?php 
             if($_GET['board'] == "General"){
-                $topics = getTopics($pdo, 1);
+                $topics = getTopics($pdo, 1, 3);
             } elseif ($_GET['board'] == "Development") {
-                $topics = getTopics($pdo, 2);
+                $topics = getTopics($pdo, 2, 3);
             } elseif ($_GET['board'] == "Smalltalk") {
-                $topics = getTopics($pdo, 3);
+                $topics = getTopics($pdo, 3, 3);
             } elseif ($_GET['board'] == "Events") {
-                $topics = getTopics($pdo, 4);
+                $topics = getTopics($pdo, 4, 3);
+            } elseif ($_GET['board'] == "Very-secret") {
+                // Avoir accès à la page uniquement si on entre le code HarringtonSecretCode
+                if($_GET['code'] == "HarringtonSecretCode"){
+                    $topics = getTopics($pdo, 5, 3);
+                } else {
+                    echo '<li class="list-group-item list-group-item-danger">STOP!! You can not see these topics. You need to add the special code to the URL. Example = "index.php?board=Very-secret&code=something".</li>';
+                }
+            } elseif ($_GET['board'] == "Random") {
+                $topics = getTopics($pdo, 6, 5);
             } else {
-                $topics = getTopics($pdo, 1);
+                $topics = getTopics($pdo, 1, 3);
             }
             ?>
-
-            <?php foreach ($topics as $topic) { ?>
-                <a href="topic.php?idTopic='<?php echo $topic->id ?>'" class="list-group-item list-group-item-action list-group-item-secondary">
-                    <div class="row row-cols-2">
-                        <div class="col text-uppercase"><?php echo $topic->title ?></div>
-                        <div class="col"><?php $date = new DateTime($topic->created_at);
-                                            echo $date->format('H:m d/m/Y') ?></div>
-                        <div class="col text-info"><?php echo $topic->nickname ?></div>
-                    </div>
-                </a>
-            <?php } ?>
+            
+            <?php 
+            if($topics){
+                foreach ($topics as $topic) { ?>
+                    <a href="topic.php?idTopic='<?php echo $topic->id ?>'" class="list-group-item list-group-item-action list-group-item-secondary">
+                        <div class="row row-cols-2">
+                            <div class="col text-uppercase"><?php echo $topic->title ?></div>
+                            <div class="col"><?php $date = new DateTime($topic->created_at);
+                                                echo $date->format('H:m d/m/Y') ?></div>
+                            <div class="col text-info"><?php echo $topic->nickname ?></div>
+                        </div>
+                    </a>
+            <?php }} ?>
 
         </div>
     </div>
