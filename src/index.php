@@ -63,32 +63,16 @@ function getDescription(PDO $pdo, $i)
         <h1 class="text-center mt-5 pt-5 mb-3">BCBB</h1>
         <ul class="nav nav-justified">
             <li class="nav-item bg-secondary">
-                <a title="<?php getDescription($pdo, 1) ?>" class="nav-link text-white <?php if ($board == "/index.php?board=General" or $board == "/" or $board == "/index.php") {
-                                                                                            echo 'bg-dark';
-                                                                                        } else {
-                                                                                            echo 'bg-secondary';
-                                                                                        }; ?>" href="index.php?board=General">General</a>
+                <a title="<?php getDescription($pdo, 1) ?>" class="nav-link text-white <?php if ($board == "/index.php?board=General" or $board == "/" or $board == "/index.php") { echo 'bg-dark'; } else { echo 'bg-secondary'; }; ?>" href="index.php?board=General">General</a>
             </li>
             <li class="nav-item">
-                <a title="<?php getDescription($pdo, 2) ?>" class="nav-link text-white <?php if ($board == "/index.php?board=Development") {
-                                                                                            echo 'bg-dark';
-                                                                                        } else {
-                                                                                            echo 'bg-secondary';
-                                                                                        }; ?>" href="index.php?board=Development">Development</a>
+                <a title="<?php getDescription($pdo, 2) ?>" class="nav-link text-white <?php if ($board == "/index.php?board=Development") { echo 'bg-dark'; } else { echo 'bg-secondary'; }; ?>" href="index.php?board=Development">Development</a>
             </li>
             <li class="nav-item">
-                <a title="<?php getDescription($pdo, 3) ?>" class="nav-link text-white <?php if ($board == "/index.php?board=Smalltalk") {
-                                                                                            echo 'bg-dark';
-                                                                                        } else {
-                                                                                            echo 'bg-secondary';
-                                                                                        }; ?>" href="index.php?board=Smalltalk">Smalltalk</a>
+                <a title="<?php getDescription($pdo, 3) ?>" class="nav-link text-white <?php if ($board == "/index.php?board=Smalltalk") { echo 'bg-dark'; } else { echo 'bg-secondary'; }; ?>" href="index.php?board=Smalltalk">Smalltalk</a>
             </li>
             <li class="nav-item">
-                <a title="<?php getDescription($pdo, 4) ?>" class="nav-link text-white <?php if ($board == "/index.php?board=Events") {
-                                                                                            echo 'bg-dark';
-                                                                                        } else {
-                                                                                            echo 'bg-secondary';
-                                                                                        }; ?>" href="index.php?board=Events">Events</a>
+                <a title="<?php getDescription($pdo, 4) ?>" class="nav-link text-white <?php if ($board == "/index.php?board=Events") { echo 'bg-dark'; } else { echo 'bg-secondary'; }; ?>" href="index.php?board=Events">Events</a>
             </li>
         </ul>
         <?php include 'creaTopic.php'; ?>
@@ -109,7 +93,7 @@ function getDescription(PDO $pdo, $i)
             ?>
 
             <?php foreach ($topics as $topic) { ?>
-                <a href="topic.php?idTopic='<?php echo $topic->id ?>'" class="list-group-item list-group-item-action list-group-item-secondary">
+                <a href="topic.php?idTopic=<?php echo $topic->id ?>" class="list-group-item list-group-item-action list-group-item-secondary">
                     <div class="row row-cols-2">
                         <div class="col text-uppercase"><?php echo $topic->title ?></div>
                         <div class="col"><?php $date = new DateTime($topic->created_at);
