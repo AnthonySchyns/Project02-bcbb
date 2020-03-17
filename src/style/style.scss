@@ -1,5 +1,3 @@
-
-
 //@import bootstrap
 @import "../lib/bootstrap/scss/bootstrap.scss";
 
@@ -15,5 +13,10 @@ nav {
   &.scrollUp {
     transform: translateY(-70px);
   }
-
+}
+.inputfile {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  z-index: -5;
 }

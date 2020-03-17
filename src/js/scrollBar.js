@@ -18,3 +18,9 @@ $(document).ready(function() {
     c = currentScrollTop;
   });
 });
+document.getElementById("buttonfile").onclick = function() {
+  document.getElementById("inputfile").click();
+};
+document.getElementById("inputfile").onchange = function() {
+  document.getElementById("buttonfile").value = this.value;
+};

@@ -33,7 +33,13 @@ $profile = get_gravatar($email, $s = 30, $d = 'mp', $r = 'g', $img = false, $att
         <a class="navbar-brand" href="index.php">Home</a>
         <ul class="nav justify-content-end">
             <li class="nav-item">
-                <a class="nav-link text-white" href="profile.php"><img src="<?php echo $profile ?>" class="rounded-circle" /></a>
+                <a class="nav-link text-white" href="profile.php">
+                    <?php if ($_SESSION['profile'] === NULL) : ?>
+                        <img src="<?php echo $profile ?>" class="rounded-circle" />
+                    <?php else : ?>
+                        <img src="<?php echo $_SESSION['profile'] ?>" style="width:30px; height:30px" class="rounded-circle" />
+                    <?php endif ?>
+                </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-white" href="disconnect.php">Disconnect</a>

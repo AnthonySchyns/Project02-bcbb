@@ -54,7 +54,7 @@ if (isset($_POST['addTopic'])) {
             . "users_id = '$idUser' ";
         if ($fileSize > 0) {
             $fileNameNew = uniqid('', true) . "." . $fileActualExt;
-            $fileDestination = "uploads/" . $fileNameNew;
+            $fileDestination = "uploads/topics/" . $fileNameNew;
             move_uploaded_file($fileTmpname, $fileDestination);
             $sqlAjout .= ", image = '$fileDestination' ";
         }
@@ -129,9 +129,10 @@ $sth = null;
                         <textarea type="text" class="form-control" name="content" placeholder="Message" rows="5"></textarea>
                     </div>
                     <div class="custom-file">
-                        <input type="file" name="imageUpload" id="imageUpload">
+                        <input type="file" name="imageUpload" id="inputfile" class="inputfile">
+                        <input id="buttonfile" type="button" value="Choose a to illustrate your topic" class="btn btn-primary">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-2">
                         <label for="boards">Boards</label>
                         <select class="form-control" id="boards" name="idBoards">
 
