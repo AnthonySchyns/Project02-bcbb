@@ -32,14 +32,14 @@ function getTopics(PDO $pdo, $a, $limit)
     $sth = null;
 }
 function getDescription(PDO $pdo, $i){
-    $sql = "SELECT description "
-        . "FROM boards "
-        . "WHERE id = '" . $i . "'";
-    $sth = $pdo->prepare($sql);
-    $sth->execute();
-    return $sth->fetchAll(PDO::FETCH_OBJ);
-    $sth->closeCursor();
-    $sth = null;
+    $sqlDescription = "SELECT description "
+                    . "FROM boards "
+                    . "WHERE id = " . $i;
+    $sthDescription = $pdo->prepare($sqlDescription);
+    $sthDescription->execute();
+    return $sthDescription->fetchAll(PDO::FETCH_OBJ);
+    $sthDescription->closeCursor();
+    $sthDescription = null;
 }
 ?>
 <!DOCTYPE html>
@@ -60,22 +60,22 @@ function getDescription(PDO $pdo, $i){
             <h1 class="text-center mt-5 pt-5 mb-3">BCBB</h1>
             <ul class="nav nav-justified">
                 <li class="nav-item">
-                    <a title="<?php getDescription($pdo, 1) ?>" class="nav-link text-white <?php if($board == "/index.php?board=General" OR $board == "/" OR $board == "/index.php"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=General">General</a>
+                    <a title="<?php echo getDescription($pdo, 1) ?>" class="nav-link text-white <?php if($board == "/index.php?board=General" OR $board == "/" OR $board == "/index.php"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=General">General</a>
                 </li>
                 <li class="nav-item">
-                    <a title="<?php getDescription($pdo, 2) ?>"class="nav-link text-white <?php if($board == "/index.php?board=Development"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Development">Development</a>
+                    <a title="<?php echo getDescription($pdo, 2) ?>" class="nav-link text-white <?php if($board == "/index.php?board=Development"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Development">Development</a>
                 </li>
                 <li class="nav-item">
-                    <a title="<?php getDescription($pdo, 3) ?>"class="nav-link text-white <?php if($board == "/index.php?board=Smalltalk"){ echo 'bg-dark';} else { echo 'bg-secondary';};?>" href="index.php?board=Smalltalk">Smalltalk</a>
+                    <a title="<?php echo getDescription($pdo, 3) ?>" class="nav-link text-white <?php if($board == "/index.php?board=Smalltalk"){ echo 'bg-dark';} else { echo 'bg-secondary';};?>" href="index.php?board=Smalltalk">Smalltalk</a>
                 </li>
                 <li class="nav-item">
-                    <a title="<?php getDescription($pdo, 4) ?>"class="nav-link text-white <?php if($board == "/index.php?board=Events"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Events">Events</a>
+                    <a title="<?php echo getDescription($pdo, 4) ?>" class="nav-link text-white <?php if($board == "/index.php?board=Events"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Events">Events</a>
                 </li>
                 <li class="nav-item">
-                    <a title="<?php getDescription($pdo, 5) ?>"class="nav-link text-white <?php if($board == "/index.php?board=Very-secret"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Very-secret">Very secret</a>
+                    <a title="<?php echo getDescription($pdo, 5) ?>" class="nav-link text-white <?php if($board == "/index.php?board=Very-secret"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Very-secret">Very secret</a>
                 </li>
                 <li class="nav-item">
-                    <a title="<?php getDescription($pdo, 6) ?>"class="nav-link text-white <?php if($board == "/index.php?board=Random"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Random">Random</a>
+                    <a title="<?php echo getDescription($pdo, 6) ?>" class="nav-link text-white <?php if($board == "/index.php?board=Random"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Random">Random</a>
                 </li>
             </ul>
             <?php include 'creaTopic.php';?>
@@ -116,7 +116,6 @@ function getDescription(PDO $pdo, $i){
                         </div>
                     </a>
             <?php }} ?>
-
         </div>
     </div>
     </script>
