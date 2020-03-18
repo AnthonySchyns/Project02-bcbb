@@ -48,7 +48,7 @@ function getDescription(PDO $pdo, $i){
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="style/style.css" rel="stylesheet" type="text/css"/>
-        <title>BCBB</title>
+        <title>Harrington BCBB</title>
     </head>
     <body>
 
@@ -57,7 +57,7 @@ function getDescription(PDO $pdo, $i){
         ?>
 
         <div class="container">
-            <h1 class="text-center mt-5 pt-5 mb-3">BCBB</h1>
+            <h1 class="text-center mt-5 pt-5 mb-3">HARRINGTON BCBB</h1>
             <ul class="nav nav-justified">
                 <li class="nav-item">
                     <a title="<?php echo getDescription($pdo, 1) ?>" class="nav-link text-white <?php if($board == "/index.php?board=General" OR $board == "/" OR $board == "/index.php"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=General">General</a>

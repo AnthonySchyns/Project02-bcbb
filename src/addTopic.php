@@ -155,7 +155,7 @@ $sth = null;
 
                         </select>
                     </div>
-                    <button type="submit" name="addTopic" class="btn btn-secondary mt-3">Send</button>
+                    <button type="submit" name="addTopic" class="btn btn-secondary mt-3 col-sm-3">Send</button>
                     <?php if (count($errors) > 0) : ?>
                         <?php foreach ($errors as $error) : ?>
                             <p class="error font-weight-bold text-danger mt-4" style="font-size:10px">

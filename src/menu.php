@@ -36,6 +36,9 @@ $profile = get_gravatar($email, $s = 30, $d = 'mp', $r = 'g', $img = false, $att
                 <a class="nav-link text-white" href="profile.php"><img src="<?php echo $profile ?>" class="rounded-circle" /></a>
             </li>
             <li class="nav-item">
+                <a class="nav-link text-white" href="myTopics.php">My topics</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-white" href="disconnect.php">Disconnect</a>
             </li>
         </ul>
