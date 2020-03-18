@@ -46,20 +46,6 @@ if (isset($_POST['addTopic'])) {
         $errors = array();
     }
     if (count($errors) === 0 && count($errorsEmpty) === 0) {
-        if($idBoards === 6){
-            // Compter le nombre de topic du board Random
-            $sqlCount = "SELECT COUNT(*) FROM topics WHERE boards_id = 6";
-            $sthCount = $pdo->prepare($sqlCount);
-            $totalRandomTopics = $sthCount->execute();
-            // Lors de la création d'un topic Random
-            // Si le nombre de topic Random est égal à 5
-            // Alors on supprime le + vieux et on ajoute le nouveau
-            if($totalRandomTopics > 5){
-                $sqlDelete = "DELETE FROM topics WHERE boards_id = 6 ORDER BY created_at ASC LIMIT 1";
-                $sthDelete = $pdo->prepare($sqlDelete);
-                $sthDelete->execute();
-            }
-        }
         $sqlAjout = "INSERT INTO topics "
             . "SET title = '$title', "
             . "content = '$content', "
@@ -74,6 +60,18 @@ if (isset($_POST['addTopic'])) {
         }
         $pdo->exec($sqlAjout);
         header("Location: index.php");
+    }
+    // Compter le nombre de topic du board Random
+    $sqlCount = "SELECT COUNT(*) FROM topics WHERE boards_id = 6";
+    $sthCount = $pdo->query($sqlCount);
+    $totalRandomTopics = $sthCount->fetchColumn();
+    // Lors de la création d'un topic Random
+    // Si le nombre de topic Random est égal à 5
+    // Alors on supprime le + vieux et on ajoute le nouveau
+    if($totalRandomTopics > 5){
+        $sqlDelete = "DELETE FROM topics WHERE boards_id = 6 ORDER BY created_at ASC LIMIT 1";
+        $sthDelete = $pdo->prepare($sqlDelete);
+        $sthDelete->execute();
     }
 }
 
