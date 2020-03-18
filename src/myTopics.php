@@ -62,7 +62,7 @@
                     <br/>
                     <ul class="pagination justify-content-center">
                     <?php
-                        for ($page=1; $page <= $totalPages ; $page++){
+                        for($page=1; $page <= $totalPages ; $page++){
                     ?>
                         <li class="page-item">
                             <a href='<?php echo "myTopics.php?page=$page"; ?>' class="page-link text-light bg-secondary border-secondary"><?php  echo $page; ?></a>

@@ -6,25 +6,32 @@ session_start();
 
 $board .= $_SERVER['REQUEST_URI'];
 
-// Get Boards
-$sql = "SELECT * "
-    . "FROM boards ";
-$sth = $pdo->prepare($sql);
-$sth->execute();
-$boards = $sth->fetchAll(PDO::FETCH_OBJ);
-$sth->closeCursor();
-$sth = null;
-
 // Get Topics
 function getTopics(PDO $pdo, $a, $limit)
 {
+    // Définir la limit et compter les données de la bd
+    $query = "SELECT count(*) FROM topics WHERE boards_id = " . $a;
+    $s = $pdo->query($query);
+    $totalResults = $s->fetchColumn();
+    global $page;
+    global $totalPages;
+    $totalPages = ceil($totalResults/$limit);
+    
+    // Si pas de page sélectionner alors la page est la 1ère
+    if (!isset($_GET['page'])) {
+        $page = 1;
+    } else{
+        $page = $_GET['page'];
+    }
+    $start = ($page-1)*$limit;
+
     $sql = "SELECT * "
         . "FROM users "
         . "INNER JOIN topics "
         . "ON users.id = topics.users_id "
         . "WHERE boards_id = '" . $a . "'"
         . " ORDER BY created_at DESC"
-        . " LIMIT " . $limit;
+        . " LIMIT " . $start . ", " . $limit;
     $sth = $pdo->prepare($sql);
     $sth->execute();
     return $sth->fetchAll(PDO::FETCH_OBJ);
@@ -115,6 +122,20 @@ function getDescription(PDO $pdo, $i){
                             <div class="col text-info"><?php echo $topic->nickname ?></div>
                         </div>
                     </a>
+                <?php } ?>
+                <br/>
+                <?php
+                    if($totalPages > 1){
+                ?>
+                    <ul class="pagination justify-content-center">
+                <?php
+                    for($page=1; $page <= $totalPages ; $page++){
+                ?>
+                    <li class="page-item">
+                        <a href='<?php echo "$board&page=$page"; ?>' class="page-link text-light bg-secondary border-secondary"><?php  echo $page; ?></a>
+                    </li>
+                    <?php } ?>
+                </ul>
             <?php }} ?>
         </div>
     </div>
