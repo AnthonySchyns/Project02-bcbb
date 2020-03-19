@@ -115,7 +115,7 @@ function getDescription(PDO $pdo, $i){
             <?php 
             if($topics){
                 foreach ($topics as $topic) { ?>
-                    <a href="topic.php?idTopic='<?php echo $topic->id ?>'" class="list-group-item list-group-item-action list-group-item-secondary">
+                    <a href="topic.php?idTopic=<?php echo $topic->id ?>" class="list-group-item list-group-item-action list-group-item-secondary">
                         <div class="row row-cols-2">
                             <div class="col text-uppercase"><?php echo $topic->title ?></div>
                             <div class="col"><?php $date = new DateTime($topic->created_at);

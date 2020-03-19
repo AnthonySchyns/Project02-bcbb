@@ -46,6 +46,7 @@
     </head>
     <body>
         <?php include 'menu.php'; ?>
+        
         <div class="container">
             <h1 class="text-center mt-5 pt-5 mb-3">My Topics</h1>
             <?php 
