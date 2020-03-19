@@ -61,6 +61,18 @@ if (isset($_POST['addTopic'])) {
         $pdo->exec($sqlAjout);
         header("Location: index.php");
     }
+    // Compter le nombre de topic du board Random
+    $sqlCount = "SELECT COUNT(*) FROM topics WHERE boards_id = 6";
+    $sthCount = $pdo->query($sqlCount);
+    $totalRandomTopics = $sthCount->fetchColumn();
+    // Lors de la création d'un topic Random
+    // Si le nombre de topic Random est égal à 5
+    // Alors on supprime le + vieux et on ajoute le nouveau
+    if($totalRandomTopics > 5){
+        $sqlDelete = "DELETE FROM topics WHERE boards_id = 6 ORDER BY created_at ASC LIMIT 1";
+        $sthDelete = $pdo->prepare($sqlDelete);
+        $sthDelete->execute();
+    }
 }
 
 // Get Boards
@@ -86,7 +98,7 @@ $sth = null;
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="style/style.css" rel="stylesheet" type="text/css" />
-    <title>BCBB</title>
+    <title>Add New Topic</title>
 </head>
 
 <body>
@@ -142,7 +154,7 @@ $sth = null;
 
                         </select>
                     </div>
-                    <button type="submit" name="addTopic" class="btn btn-secondary mt-3">Send</button>
+                    <button type="submit" name="addTopic" class="btn btn-secondary mt-3 col-sm-3">Send</button>
                     <?php if (count($errors) > 0) : ?>
                         <?php foreach ($errors as $error) : ?>
                             <p class="error font-weight-bold text-danger mt-4" style="font-size:10px">
