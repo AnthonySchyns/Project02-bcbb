@@ -113,6 +113,76 @@ $messages = $sth->fetchAll(PDO::FETCH_OBJ);
 $sth->closeCursor();
 $sth = null;
 
+// Add Reaction
+$errors = array();
+if (isset($_POST['sendReact'])) {
+    $emoji = trim(addslashes($_POST['reaction']));
+    $test = recode_string($emoji);
+    $idMessage = $_POST["sendReact"];
+    var_dump($emoji, $idMessage, $_POST['sendReact'], $test);
+
+    $sqlVerif = "SELECT * "
+        . "FROM reactions "
+        . "WHERE emoji IN ('" . $emoji . "')";
+    $sth = $pdo->prepare($sqlVerif);
+    $sth->execute();
+    $verif = $sth->fetch(PDO::FETCH_OBJ);
+    $sth->closeCursor();
+    $sth = null;
+    var_dump($verif);
+
+    if (!$verif){
+        $sqlAjout = "INSERT INTO reactions "
+            . "SET emoji = '" . $emoji . "' ";
+        $sth = $pdo->prepare($sqlAjout);
+        $sth->execute();
+        $sth->closeCursor();
+        $sth = null;
+
+        $sql = "SELECT LAST_INSERT_ID() "
+            . "FROM reactions ";
+        $sth = $pdo->prepare($sql);
+        $sth->execute();
+        $idEmoji = $sth->fetch();
+        $sth->closeCursor();
+        $sth = null;
+
+        $sqlAjout = "INSERT INTO reactions_has_messages "
+            . "SET reactions_id = '" . $idEmoji[0] . "', "
+            . "messages_id = '" . $idMessage . "', "
+            . "count = '1' ";
+        $sth = $pdo->prepare($sqlAjout);
+        $sth->execute();
+        $sth->closeCursor();
+        $sth = null;
+    } else {
+        var_dump($verif->id, $idMessage);
+        $sqlUpdate = "UPDATE reactions_has_messages "
+            . "SET count = count + 1 "
+            . "WHERE reactions_id = '" . $verif->id . "' "
+            . "AND messages_id = '" . $idMessage . "'";
+
+        $sth = $pdo->prepare($sqlUpdate);
+        $sth->execute();
+        $sth->closeCursor();
+        $sth = null;
+    }
+}
+
+// Get Reaction
+$sql = "SELECT * "
+    . "FROM reactions "
+    . "LEFT JOIN reactions_has_messages "
+    . "ON reactions.id = reactions_has_messages.reactions_id "
+    . "LEFT JOIN messages "
+    . "ON messages.id = reactions_has_messages.messages_id ";
+$sth = $pdo->prepare($sql);
+$sth->execute();
+$reactions = $sth->fetchAll(PDO::FETCH_OBJ);
+$sth->closeCursor();
+$sth = null;
+
+//var_dump($reactions[0]);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -190,54 +260,76 @@ $sth = null;
 
         <?php foreach ($messages as $message) { ?>
 
-            <div class="row border">
-                <div class="col-md-2 border-right p-5 align-middle">
-                    <img src="<?php echo get_gravatar($message->email); ?>" alt="image user" class="img-thumbnail">
-                    <p class="text-center mt-4 font-weight-bold"><?php echo $message->nickname ?></p>
-                </div>
-                <div class="col p-5">
+            <div class="border">
+                <div class="row">
+                    <div class="col-md-2 border-right p-5 align-middle">
+                        <img src="<?php echo get_gravatar($message->email); ?>" alt="image user" class="img-thumbnail">
+                        <p class="text-center mt-4 font-weight-bold"><?php echo $message->nickname ?></p>
+                    </div>
+                    <div class="col p-5">
 
-                    <?php if ($message->deleted_at == null) { ?>
-                        <?php if ($_POST['update'] == $message->id) { ?>
-                            <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post" class="row emoji-picker-container">
-                                <textarea type="text" class="form-control" name="content" rows="10" data-emojiable="true"><?php echo $message->content ?></textarea>
-                                <button type="submit" name="sendUpdate" value="<?php echo $message->id ?>" class="btn btn-secondary mt-3">Modifier</button>
-                            </form>
-                        <?php } else { ?>
-                            <p><?php $Parsedown = new Parsedown();
-                                echo $Parsedown->text($message->content); ?></p>
-                            <p class="text-right"><?php $date = new DateTime($message->updated_at);
-                                                    echo $date->format('H:m d/m/Y'); ?></p>
-
-                            <?php if ($message->signature != NULL) { ?>
-                                <p><?php echo $message->signature ?></p>
-                            <?php } ?>
-
-                        <?php } ?>
-                    <?php } else { ?>
-                        <p>Message has been deleted !!</p>
-                    <?php } ?>
-
-                </div>
-                <div class="col-1 d-flex flex-column justify-content-around align-items-center">
-
-                    <?php if ((isset($_SESSION['idUser']) and $_SESSION['idUser'] == $message->users_id) AND $topic->lockTopic == 0) { ?>
                         <?php if ($message->deleted_at == null) { ?>
-                            <?php if (empty($_POST['update'])) { ?>
-                                <?php if ($message->id == $messages[0]->id) { ?>
-
-                                <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
-                                    <button type="submit" name="update" value="<?php echo $message->id ?>" class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
+                            <?php if ($_POST['update'] == $message->id) { ?>
+                                <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post" class="row emoji-picker-container">
+                                    <textarea type="text" class="form-control" name="content" rows="10" data-emojiable="true"><?php echo $message->content ?></textarea>
+                                    <button type="submit" name="sendUpdate" value="<?php echo $message->id ?>" class="btn btn-secondary mt-3">Modifier</button>
                                 </form>
+                            <?php } else { ?>
+                                <p><?php $Parsedown = new Parsedown(); echo $Parsedown->text($message->content); ?></p>
+                                <p class="text-right"><?php $date = new DateTime($message->updated_at); echo $date->format('H:m d/m/Y'); ?></p>
 
+                                <?php if ($message->signature != NULL) { ?>
+                                    <p><?php echo $message->signature ?></p>
                                 <?php } ?>
-                                <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
-                                    <button type="submit" name="del" value="<?php echo $message->id ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
-                                </form>
+
+                            <?php } ?>
+                        <?php } else { ?>
+                            <p>Message has been deleted !!</p>
+                        <?php } ?>
+
+                    </div>
+                    <div class="col-1 d-flex flex-column justify-content-around align-items-center">
+
+                        <?php if ((isset($_SESSION['idUser']) and $_SESSION['idUser'] == $message->users_id) AND $topic->lockTopic == 0) { ?>
+                            <?php if ($message->deleted_at == null) { ?>
+                                <?php if (empty($_POST['update'])) { ?>
+                                    <?php if ($message->id == $messages[0]->id) { ?>
+
+                                    <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
+                                        <button type="submit" name="update" value="<?php echo $message->id ?>" class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
+                                    </form>
+
+                                    <?php } ?>
+                                    <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
+                                        <button type="submit" name="del" value="<?php echo $message->id ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+                                    </form>
+                                <?php } ?>
                             <?php } ?>
                         <?php } ?>
-                    <?php } ?>
+                    </div>
+                </div>
+                <div class="row d-flex flex-row-reverse container">
+                    <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
 
+                            <?php foreach ($reactions as $reaction) { ?>
+                                <?php if ($reaction->messages_id == $message->id) { ?>
+                                    <?php echo $reaction->emoji . " " . $reaction->count . "  " ?>
+                                <?php } ?>
+                            <?php } ?>
+
+                                </span>
+                            </div>
+                            <div class=" emoji-picker-container">
+                                <input id="test" type="text" class="form-control" name="reaction" data-emojiable="true" maxlength="1" required="required">
+                            </div>
+                            <div class="input-group-append">
+                                <button type="submit" name="sendReact" value="<?php echo $message->id ?>" class="btn btn-secondary">Send</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
             <br>
@@ -275,10 +367,28 @@ $sth = null;
             // It can be called as many times as necessary; previously converted input fields will not be converted again
             window.emojiPicker.discover();
         });
+
+
+        let input = document.querySelector(".img");
+
+        btn2.addEventListener("click", () => {
+        if (status2 == 1) {
+            roll2 = setInterval(random2, 100);
+            status2 = 0;
+            btn2.innerHTML = "Stop";
+        }
+        else {
+            clearInterval(roll2);
+            status2 = 1;
+            btn2.innerHTML = "Play";
+        }
+    });
+        var test = document.querySelector(".img").dataset;
+        console.log(test);
+
     </script>
 
     <script src="js/scrollBar.js"></script>
 
 </body>
-
 </html>
