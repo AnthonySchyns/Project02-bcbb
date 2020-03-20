@@ -1,6 +1,6 @@
 <?php
 
-require_once('connexion.php');
+require_once 'connexion.php';
 
 session_start();
 
@@ -44,7 +44,7 @@ function getDescription(PDO $pdo, $i){
                     . "WHERE id = " . $i;
     $sthDescription = $pdo->prepare($sqlDescription);
     $sthDescription->execute();
-    return $sthDescription->fetchAll(PDO::FETCH_OBJ);
+    return $sthDescription->fetchColumn();
     $sthDescription->closeCursor();
     $sthDescription = null;
 }
@@ -68,22 +68,22 @@ function getDescription(PDO $pdo, $i){
             <h1 class="text-center mt-5 pt-5 mb-3">HARRINGTON BCBB</h1>
             <ul class="nav nav-justified">
                 <li class="nav-item">
-                    <a title="<?php echo getDescription($pdo, 1) ?>" class="nav-link text-white <?php if($board == "/index.php?board=General" OR $board == "/" OR $board == "/index.php"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=General">General</a>
+                    <a title="<?php getDescription($pdo, 1) ?>" class="nav-link text-white <?php if(strpos($board, "General") || $board == "/" || $board == "/index.php"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=General">General</a>
                 </li>
                 <li class="nav-item">
-                    <a title="<?php echo getDescription($pdo, 2) ?>" class="nav-link text-white <?php if($board == "/index.php?board=Development"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Development">Development</a>
+                    <a title="<?php getDescription($pdo, 2) ?>" class="nav-link text-white <?php if(strpos($board, "Development")){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Development">Development</a>
                 </li>
                 <li class="nav-item">
-                    <a title="<?php echo getDescription($pdo, 3) ?>" class="nav-link text-white <?php if($board == "/index.php?board=Smalltalk"){ echo 'bg-dark';} else { echo 'bg-secondary';};?>" href="index.php?board=Smalltalk">Smalltalk</a>
+                    <a title="<?php getDescription($pdo, 3) ?>" class="nav-link text-white <?php if(strpos($board, "Smalltalk")){ echo 'bg-dark';} else { echo 'bg-secondary';};?>" href="index.php?board=Smalltalk">Smalltalk</a>
                 </li>
                 <li class="nav-item">
-                    <a title="<?php echo getDescription($pdo, 4) ?>" class="nav-link text-white <?php if($board == "/index.php?board=Events"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Events">Events</a>
+                    <a title="<?php getDescription($pdo, 4) ?>" class="nav-link text-white <?php if(strpos($board, "Events")){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Events">Events</a>
                 </li>
                 <li class="nav-item">
-                    <a title="<?php echo getDescription($pdo, 5) ?>" class="nav-link text-white <?php if($board == "/index.php?board=Very-secret"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Very-secret">Very secret</a>
+                    <a title="<?php getDescription($pdo, 5) ?>" class="nav-link text-white <?php if(strpos($board, "Very-secret")){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Very-secret">Very secret</a>
                 </li>
                 <li class="nav-item">
-                    <a title="<?php echo getDescription($pdo, 6) ?>" class="nav-link text-white <?php if($board == "/index.php?board=Random"){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Random">Random</a>
+                    <a title="<?php getDescription($pdo, 6) ?>" class="nav-link text-white <?php if(strpos($board, "Random")){ echo 'bg-dark';} else { echo 'bg-secondary';}; ?>" href="index.php?board=Random">Random</a>
                 </li>
             </ul>
             <?php include 'creaTopic.php';?>
@@ -115,7 +115,7 @@ function getDescription(PDO $pdo, $i){
             <?php 
             if($topics){
                 foreach ($topics as $topic) { ?>
-                    <a href="topic.php?idTopic='<?php echo $topic->id ?>'" class="list-group-item list-group-item-action list-group-item-secondary">
+                    <a href="topic.php?idTopic=<?php echo $topic->id ?>" class="list-group-item list-group-item-action list-group-item-secondary">
                         <div class="row row-cols-2">
                             <div class="col text-uppercase"><?php echo $topic->title ?></div>
                             <div class="col"><?php $date = new DateTime($topic->created_at);
@@ -138,8 +138,8 @@ function getDescription(PDO $pdo, $i){
                     <?php } ?>
                 </ul>
             <?php }} ?>
+            </div>
         </div>
-
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
