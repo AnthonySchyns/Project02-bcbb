@@ -60,6 +60,9 @@
                         </a>
                     <?php } ?>
                     <br/>
+                    <?php
+                    if($totalPages > 1){
+                    ?>
                     <ul class="pagination justify-content-center">
                     <?php
                         for($page=1; $page <= $totalPages ; $page++){
@@ -69,7 +72,7 @@
                         </li>
                         <?php } ?>
                     </ul>
-            <?php } else { ?>
+            <?php }} else { ?>
                 <li class="list-group-item list-group-item-secondary text-center">You didn't started any topic yet. You can start one anytime just by clicking down here.</li>
                 <?php include 'creaTopic.php';?>
             <?php } ?>
