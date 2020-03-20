@@ -3,6 +3,7 @@
 session_start();
 
 require_once 'connexion.php';
+require("sendgrid-php/sendgrid-php.php");
 
 // Markdown
 require('lib/Parsedown.php');
@@ -11,14 +12,14 @@ $idTopic = $_GET['idTopic'];
 
 // Toggle Lock Topic
 if (isset($_POST['lock'])) {
-    if($_POST['lock'] == 1){
+    if ($_POST['lock'] == 1) {
         $sqlUpdate = "UPDATE topics "
-                    . "SET lockTopic = 1 "
-                    . "WHERE id = " . $idTopic;
-    } else{
+            . "SET lockTopic = 1 "
+            . "WHERE id = " . $idTopic;
+    } else {
         $sqlUpdate = "UPDATE topics "
-                    . "SET lockTopic = 0 "
-                    . "WHERE id = " . $idTopic;
+            . "SET lockTopic = 0 "
+            . "WHERE id = " . $idTopic;
     }
 
     $sth = $pdo->prepare($sqlUpdate);
@@ -76,6 +77,7 @@ $sth = null;
 
 // Add Message
 $errors = array();
+$allEmail = array();
 if (isset($_POST['addMessage'])) {
     $content = trim(addslashes($_POST['content']));
     date_default_timezone_set('Europe/Brussels');
@@ -97,6 +99,45 @@ if (isset($_POST['addMessage'])) {
         $sth->execute();
         $sth->closeCursor();
         $sth = null;
+        $envoiEmail = "SELECT email FROM users WHERE id='" . $user . "' ";
+        $sth = $pdo->prepare($envoiEmail);
+        $sth->execute();
+        $emails = $sth->fetch(PDO::FETCH_OBJ);
+        $sth->closeCursor();
+        $sth = null;
+        array_push($allEmail, $emails->email);
+        $sendEmail = array_unique($allEmail);
+        foreach ($sendEmail as $emailUnique) {
+            $request_body = json_decode('{
+  "personalizations": [
+    {
+      "to": [
+        {
+          "email": "aschyns499@gmail.com"
+        }
+      ],
+      "subject": "Hello World from the SendGrid PHP Library!"
+    }
+  ],
+  "from": {
+    "email": "aschyns499@gmail.com"
+  },
+  "content": [
+    {
+      "type": "text/plain",
+      "value": "Hello, Email!"
+    }
+  ]
+}');
+
+            $apiKey = 'SENDGRID_API_KEY';
+            $sg = new \SendGrid($apiKey);
+
+            $response = $sg->client->mail()->send()->post($request_body);
+            echo $response->statusCode();
+            echo $response->body();
+            echo $response->headers();
+        }
     }
 }
 
@@ -141,7 +182,8 @@ $sth = null;
             <div class="col-md-2 border-right p-5">
                 <img src="<?php echo get_gravatar($topic->email); ?>" class="img-thumbnail">
                 <p class="text-center mt-4 font-weight-bold"><?php echo $topic->nickname ?></p>
-                <p class="text-center">Topic created<br /><?php $date = new DateTime($topic->created_at); echo $date->format('H:m d/m/Y') ?></p>
+                <p class="text-center">Topic created<br /><?php $date = new DateTime($topic->created_at);
+                                                            echo $date->format('H:m d/m/Y') ?></p>
             </div>
             <div class="col p-5">
                 <p><?php echo $topic->content ?></p>
@@ -150,27 +192,27 @@ $sth = null;
                 <?php endif ?>
             </div>
 
-        <?php if(isset($_SESSION['idUser']) and $_SESSION['idUser'] == $topic->users_id){ ?>
-            <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post" class="col-1 align-self-end mb-3">
+            <?php if (isset($_SESSION['idUser']) and $_SESSION['idUser'] == $topic->users_id) { ?>
+                <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post" class="col-1 align-self-end mb-3">
 
-            <?php if($topic->lockTopic == 0){ ?>
-                <button type="submit" name="lock" value="1" class="btn btn-outline-danger">Lock</button>
-            <?php } else{ ?>
-                <button type="submit" name="lock" value="0" class="btn btn-outline-secondary">Unlock</button>
+                    <?php if ($topic->lockTopic == 0) { ?>
+                        <button type="submit" name="lock" value="1" class="btn btn-outline-danger">Lock</button>
+                    <?php } else { ?>
+                        <button type="submit" name="lock" value="0" class="btn btn-outline-secondary">Unlock</button>
+                    <?php } ?>
+
+                </form>
             <?php } ?>
-
-            </form>
-        <?php } ?>
         </div>
     </section>
 
-    <?php if (isset($_SESSION['idUser']) AND $topic->lockTopic == 0 AND $messages[0]->users_id != $_SESSION['idUser']) { ?>
+    <?php if (isset($_SESSION['idUser']) and $topic->lockTopic == 0 and $messages[0]->users_id != $_SESSION['idUser']) { ?>
 
         <section class="container mt-5">
             <h3 class="mb-5">
                 Your Message
-                <?php if (count($errors) > 0){ ?>
-                    <?php foreach ($errors as $error){ ?>
+                <?php if (count($errors) > 0) { ?>
+                    <?php foreach ($errors as $error) { ?>
                         <span class="error font-weight-bold text-danger ml-2" style="font-size:10px">
                             <?php echo $error ?>
                         </span>
@@ -221,14 +263,14 @@ $sth = null;
                 </div>
                 <div class="col-1 d-flex flex-column justify-content-around align-items-center">
 
-                    <?php if ((isset($_SESSION['idUser']) and $_SESSION['idUser'] == $message->users_id) AND $topic->lockTopic == 0) { ?>
+                    <?php if ((isset($_SESSION['idUser']) and $_SESSION['idUser'] == $message->users_id) and $topic->lockTopic == 0) { ?>
                         <?php if ($message->deleted_at == null) { ?>
                             <?php if (empty($_POST['update'])) { ?>
                                 <?php if ($message->id == $messages[0]->id) { ?>
 
-                                <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
-                                    <button type="submit" name="update" value="<?php echo $message->id ?>" class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
-                                </form>
+                                    <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
+                                        <button type="submit" name="update" value="<?php echo $message->id ?>" class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
+                                    </form>
 
                                 <?php } ?>
                                 <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
