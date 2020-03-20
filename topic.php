@@ -107,6 +107,7 @@ if (isset($_POST['addMessage'])) {
         $sth = null;
         array_push($allEmail, $emails->email);
         $sendEmail = array_unique($allEmail);
+        var_dump($sendEmail);
         foreach ($sendEmail as $emailUnique) {
             $request_body = json_decode('{
   "personalizations": [
