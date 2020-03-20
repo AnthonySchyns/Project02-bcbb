@@ -131,7 +131,7 @@ if (isset($_POST['addMessage'])) {
   ]
 }');
 
-            $apiKey = 'SENDGRID_API_KEY';
+            $apiKey = getenv('SENDGRID_API_KEY');
             $sg = new \SendGrid($apiKey);
 
             $response = $sg->client->mail()->send()->post($request_body);
