@@ -116,24 +116,34 @@ $sth = null;
 // Add Reaction
 $errors = array();
 if (isset($_POST['sendReact'])) {
-    $emoji = trim(addslashes($_POST['reaction']));
-    $test = recode_string($emoji);
+    $emojiInput = trim(addslashes($_POST['reaction']));
+    $json = json_encode($emojiInput);
     $idMessage = $_POST["sendReact"];
-    var_dump($emoji, $idMessage, $_POST['sendReact'], $test);
 
     $sqlVerif = "SELECT * "
         . "FROM reactions "
-        . "WHERE emoji IN ('" . $emoji . "')";
+        . "WHERE json IN (" . $json . ")";
     $sth = $pdo->prepare($sqlVerif);
     $sth->execute();
-    $verif = $sth->fetch(PDO::FETCH_OBJ);
+    $emoji = $sth->fetch(PDO::FETCH_OBJ);
     $sth->closeCursor();
     $sth = null;
-    var_dump($verif);
 
-    if (!$verif){
+    $sqlVerif = "SELECT * "
+        . "FROM reactions_has_messages "
+        . "WHERE messages_id IN (" . $idMessage . ") "
+        . "AND reactions_id IN (" . $emoji->id . ")";
+    $sth = $pdo->prepare($sqlVerif);
+    $sth->execute();
+    $lienEmoji = $sth->fetch(PDO::FETCH_OBJ);
+    $sth->closeCursor();
+    $sth = null;
+    var_dump($lienEmoji,$idMessage,$emoji->id);
+
+    if (!$emoji){
         $sqlAjout = "INSERT INTO reactions "
-            . "SET emoji = '" . $emoji . "' ";
+            . "SET emoji = '" . $emojiInput . "', "
+            . "json = " . $json;
         $sth = $pdo->prepare($sqlAjout);
         $sth->execute();
         $sth->closeCursor();
@@ -155,11 +165,19 @@ if (isset($_POST['sendReact'])) {
         $sth->execute();
         $sth->closeCursor();
         $sth = null;
+    } else if($emoji AND !$lienEmoji) {
+        $sqlAjout = "INSERT INTO reactions_has_messages "
+            . "SET reactions_id = '" . $emoji->id . "', "
+            . "messages_id = '" . $idMessage . "', "
+            . "count = '1' ";
+        $sth = $pdo->prepare($sqlAjout);
+        $sth->execute();
+        $sth->closeCursor();
+        $sth = null;
     } else {
-        var_dump($verif->id, $idMessage);
         $sqlUpdate = "UPDATE reactions_has_messages "
             . "SET count = count + 1 "
-            . "WHERE reactions_id = '" . $verif->id . "' "
+            . "WHERE reactions_id = '" . $emoji->id . "' "
             . "AND messages_id = '" . $idMessage . "'";
 
         $sth = $pdo->prepare($sqlUpdate);
