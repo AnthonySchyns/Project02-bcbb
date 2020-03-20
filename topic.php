@@ -6,8 +6,27 @@ require_once 'connexion.php';
 
 // Markdown
 require('lib/Parsedown.php');
+require("lib/sendgrid-php/sendgrid-php.php");
 
-$path = $_GET['idTopic'];
+$idTopic = $_GET['idTopic'];
+
+// Toggle Lock Topic
+if (isset($_POST['lock'])) {
+    if ($_POST['lock'] == 1) {
+        $sqlUpdate = "UPDATE topics "
+            . "SET lockTopic = 1 "
+            . "WHERE id = " . $idTopic;
+    } else {
+        $sqlUpdate = "UPDATE topics "
+            . "SET lockTopic = 0 "
+            . "WHERE id = " . $idTopic;
+    }
+
+    $sth = $pdo->prepare($sqlUpdate);
+    $sth->execute();
+    $sth->closeCursor();
+    $sth = null;
+}
 
 // Del Message
 if (isset($_POST['del'])) {
@@ -44,8 +63,6 @@ if (isset($_POST['sendUpdate'])) {
 }
 
 // Get Topics
-$idTopic = $_GET['idTopic'];
-
 $sql = "SELECT * "
     . "FROM topics "
     . "INNER JOIN users "
@@ -69,6 +86,7 @@ if (isset($_POST['addMessage'])) {
     if (empty($content)) {
         array_push($errors, "You can't send en empty message !");
     }
+    $allEmail = array();
     if (count($errors) === 0) {
         $sqlAjout = "INSERT INTO messages "
             . "SET content = '$content', "
@@ -77,7 +95,49 @@ if (isset($_POST['addMessage'])) {
             . "users_id = '$user', "
             . "topics_id = '$idTopic' ";
 
-        $pdo->exec($sqlAjout);
+        $sth = $pdo->prepare($sqlAjout);
+        $sth->execute();
+        $sth->closeCursor();
+        $sth = null;
+        $envoiEmail = "SELECT email FROM users WHERE id='" . $user . "' ";
+        $sth = $pdo->prepare($envoiEmail);
+        $sth->execute();
+        $emails = $sth->fetch(PDO::FETCH_OBJ);
+        $sth->closeCursor();
+        $sth = null;
+        array_push($allEmail, $emails->email);
+        $sendEmail = array_unique($allEmail);
+        foreach ($sendEmail as $emailUnique) {
+            $request_body = json_decode('{
+  "personalizations": [
+    {
+      "to": [
+        {
+          "email": "aschyns499@gmail.com"
+        }
+      ],
+      "subject": "Hello World from the SendGrid PHP Library!"
+    }
+  ],
+  "from": {
+    "email": "aschyns499@gmail.com"
+  },
+  "content": [
+    {
+      "type": "text/plain",
+      "value": "Hello, Email!"
+    }
+  ]
+}');
+
+            $apiKey = 'SENDGRID_API_KEY';
+            $sg = new \SendGrid($apiKey);
+
+            $response = $sg->client->mail()->send()->post($request_body);
+            echo $response->statusCode();
+            echo $response->body();
+            echo $response->headers();
+        }
     }
 }
 
@@ -94,6 +154,94 @@ $messages = $sth->fetchAll(PDO::FETCH_OBJ);
 $sth->closeCursor();
 $sth = null;
 
+// Add Reaction
+$errors = array();
+if (isset($_POST['sendReact'])) {
+    $emojiInput = trim(addslashes($_POST['reaction']));
+    $json = json_encode($emojiInput);
+    $idMessage = $_POST["sendReact"];
+
+    $sqlVerif = "SELECT * "
+        . "FROM reactions "
+        . "WHERE json IN (" . $json . ")";
+    $sth = $pdo->prepare($sqlVerif);
+    $sth->execute();
+    $emoji = $sth->fetch(PDO::FETCH_OBJ);
+    $sth->closeCursor();
+    $sth = null;
+
+    $sqlVerif = "SELECT * "
+        . "FROM reactions_has_messages "
+        . "WHERE messages_id IN (" . $idMessage . ") "
+        . "AND reactions_id IN (" . $emoji->id . ")";
+    $sth = $pdo->prepare($sqlVerif);
+    $sth->execute();
+    $lienEmoji = $sth->fetch(PDO::FETCH_OBJ);
+    $sth->closeCursor();
+    $sth = null;
+    var_dump($lienEmoji, $idMessage, $emoji->id);
+
+    if (!$emoji) {
+        $sqlAjout = "INSERT INTO reactions "
+            . "SET emoji = '" . $emojiInput . "', "
+            . "json = " . $json;
+        $sth = $pdo->prepare($sqlAjout);
+        $sth->execute();
+        $sth->closeCursor();
+        $sth = null;
+
+        $sql = "SELECT LAST_INSERT_ID() "
+            . "FROM reactions ";
+        $sth = $pdo->prepare($sql);
+        $sth->execute();
+        $idEmoji = $sth->fetch();
+        $sth->closeCursor();
+        $sth = null;
+
+        $sqlAjout = "INSERT INTO reactions_has_messages "
+            . "SET reactions_id = '" . $idEmoji[0] . "', "
+            . "messages_id = '" . $idMessage . "', "
+            . "count = '1' ";
+        $sth = $pdo->prepare($sqlAjout);
+        $sth->execute();
+        $sth->closeCursor();
+        $sth = null;
+    } else if ($emoji and !$lienEmoji) {
+        $sqlAjout = "INSERT INTO reactions_has_messages "
+            . "SET reactions_id = '" . $emoji->id . "', "
+            . "messages_id = '" . $idMessage . "', "
+            . "count = '1' ";
+        $sth = $pdo->prepare($sqlAjout);
+        $sth->execute();
+        $sth->closeCursor();
+        $sth = null;
+    } else {
+        $sqlUpdate = "UPDATE reactions_has_messages "
+            . "SET count = count + 1 "
+            . "WHERE reactions_id = '" . $emoji->id . "' "
+            . "AND messages_id = '" . $idMessage . "'";
+
+        $sth = $pdo->prepare($sqlUpdate);
+        $sth->execute();
+        $sth->closeCursor();
+        $sth = null;
+    }
+}
+
+// Get Reaction
+$sql = "SELECT * "
+    . "FROM reactions "
+    . "LEFT JOIN reactions_has_messages "
+    . "ON reactions.id = reactions_has_messages.reactions_id "
+    . "LEFT JOIN messages "
+    . "ON messages.id = reactions_has_messages.messages_id ";
+$sth = $pdo->prepare($sql);
+$sth->execute();
+$reactions = $sth->fetchAll(PDO::FETCH_OBJ);
+$sth->closeCursor();
+$sth = null;
+
+//var_dump($reactions[0]);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -131,23 +279,35 @@ $sth = null;
                     <img src="<?php echo $topic->image ?>" style="width:300px; height:250px" class="mt-4" />
                 <?php endif ?>
             </div>
+
+            <?php if (isset($_SESSION['idUser']) and $_SESSION['idUser'] == $topic->users_id) { ?>
+                <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post" class="col-1 align-self-end mb-3">
+
+                    <?php if ($topic->lockTopic == 0) { ?>
+                        <button type="submit" name="lock" value="1" class="btn btn-outline-danger">Lock</button>
+                    <?php } else { ?>
+                        <button type="submit" name="lock" value="0" class="btn btn-outline-secondary">Unlock</button>
+                    <?php } ?>
+
+                </form>
+            <?php } ?>
         </div>
     </section>
 
-    <?php if (isset($_SESSION['idUser'])) { ?>
+    <?php if (isset($_SESSION['idUser']) and $topic->lockTopic == 0 and $messages[0]->users_id != $_SESSION['idUser']) { ?>
 
         <section class="container mt-5">
             <h3 class="mb-5">
                 Your Message
-                <?php if (count($errors) > 0) : ?>
-                    <?php foreach ($errors as $error) : ?>
+                <?php if (count($errors) > 0) { ?>
+                    <?php foreach ($errors as $error) { ?>
                         <span class="error font-weight-bold text-danger ml-2" style="font-size:10px">
                             <?php echo $error ?>
                         </span>
-                    <?php endforeach ?>
-                <?php endif ?>
+                    <?php } ?>
+                <?php } ?>
             </h3>
-            <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row emoji-picker-container">
+            <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post" class="row emoji-picker-container">
                 <textarea type="text" class="form-control" name="content" placeholder="Message" rows="5" data-emojiable="true"></textarea>
                 <button type="submit" name="addMessage" class="btn btn-secondary mt-3">Send</button>
             </form>
@@ -160,50 +320,78 @@ $sth = null;
 
         <?php foreach ($messages as $message) { ?>
 
-            <div class="row border">
-                <div class="col-md-2 border-right p-5 align-middle">
-                    <img src="<?php echo get_gravatar($message->email); ?>" alt="image user" class="img-thumbnail">
-                    <p class="text-center mt-4 font-weight-bold"><?php echo $message->nickname ?></p>
-                </div>
-                <div class="col p-5">
+            <div class="border">
+                <div class="row">
+                    <div class="col-md-2 border-right p-5 align-middle">
+                        <img src="<?php echo get_gravatar($message->email); ?>" alt="image user" class="img-thumbnail">
+                        <p class="text-center mt-4 font-weight-bold"><?php echo $message->nickname ?></p>
+                    </div>
+                    <div class="col p-5">
 
-                    <?php if ($message->deleted_at == null) { ?>
-                        <?php if ($_POST['update'] == $message->id) { ?>
-                            <form action="topic.php?idTopic=<?php echo $path ?>" method="post" class="row emoji-picker-container">
-                                <textarea type="text" class="form-control" name="content" rows="10" data-emojiable="true"><?php echo $message->content ?></textarea>
-                                <button type="submit" name="sendUpdate" value="<?php echo $message->id ?>" class="btn btn-secondary mt-3">Modifier</button>
-                            </form>
-                        <?php } else { ?>
-                            <p><?php $Parsedown = new Parsedown();
-                                echo $Parsedown->text($message->content); ?></p>
-                            <p class="text-right"><?php $date = new DateTime($message->updated_at);
-                                                    echo $date->format('H:m d/m/Y'); ?></p>
-
-                            <?php if ($message->signature != NULL) { ?>
-                                <p><?php echo $message->signature ?></p>
-                            <?php } ?>
-
-                        <?php } ?>
-                    <?php } else { ?>
-                        <p>Message has been deleted !!</p>
-                    <?php } ?>
-
-                </div>
-                <div class="col-1 d-flex flex-column justify-content-around align-items-center">
-
-                    <?php if (isset($_SESSION['idUser']) and $_SESSION['idUser'] == $message->users_id) { ?>
                         <?php if ($message->deleted_at == null) { ?>
-                            <?php if (empty($_POST['update'])) { ?>
-                                <form action="topic.php?idTopic=<?php echo $path ?>" method="post">
-                                    <button type="submit" name="update" value="<?php echo $message->id ?>" class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
+                            <?php if ($_POST['update'] == $message->id) { ?>
+                                <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post" class="row emoji-picker-container">
+                                    <textarea type="text" class="form-control" name="content" rows="10" data-emojiable="true"><?php echo $message->content ?></textarea>
+                                    <button type="submit" name="sendUpdate" value="<?php echo $message->id ?>" class="btn btn-secondary mt-3">Modifier</button>
                                 </form>
-                                <form action="topic.php?idTopic=<?php echo $path ?>" method="post">
-                                    <button type="submit" name="del" value="<?php echo $message->id ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
-                                </form>
+                            <?php } else { ?>
+                                <p><?php $Parsedown = new Parsedown();
+                                    echo $Parsedown->text($message->content); ?></p>
+                                <p class="text-right"><?php $date = new DateTime($message->updated_at);
+                                                        echo $date->format('H:m d/m/Y'); ?></p>
+
+                                <?php if ($message->signature != NULL) { ?>
+                                    <p><?php echo $message->signature ?></p>
+                                <?php } ?>
+
+                            <?php } ?>
+                        <?php } else { ?>
+                            <p>Message has been deleted !!</p>
+                        <?php } ?>
+
+                    </div>
+                    <div class="col-1 d-flex flex-column justify-content-around align-items-center">
+
+                        <?php if ((isset($_SESSION['idUser']) and $_SESSION['idUser'] == $message->users_id) and $topic->lockTopic == 0) { ?>
+                            <?php if ($message->deleted_at == null) { ?>
+                                <?php if (empty($_POST['update'])) { ?>
+                                    <?php if ($message->id == $messages[0]->id) { ?>
+
+                                        <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
+                                            <button type="submit" name="update" value="<?php echo $message->id ?>" class="btn btn-outline-primary"><i class="fas fa-edit"></i></button>
+                                        </form>
+
+                                    <?php } ?>
+                                    <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
+                                        <button type="submit" name="del" value="<?php echo $message->id ?>" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i></button>
+                                    </form>
+                                <?php } ?>
                             <?php } ?>
                         <?php } ?>
-                    <?php } ?>
+                    </div>
+                </div>
+                <div class="row d-flex flex-row-reverse container">
+                    <form action="topic.php?idTopic=<?php echo $idTopic ?>" method="post">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
 
+                                    <?php foreach ($reactions as $reaction) { ?>
+                                        <?php if ($reaction->messages_id == $message->id) { ?>
+                                            <?php echo $reaction->emoji . " " . $reaction->count . "  " ?>
+                                        <?php } ?>
+                                    <?php } ?>
+
+                                </span>
+                            </div>
+                            <div class=" emoji-picker-container">
+                                <input id="test" type="text" class="form-control" name="reaction" data-emojiable="true" maxlength="1" required="required">
+                            </div>
+                            <div class="input-group-append">
+                                <button type="submit" name="sendReact" value="<?php echo $message->id ?>" class="btn btn-secondary">Send</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
             <br>

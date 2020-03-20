@@ -178,8 +178,8 @@ if (isset($_POST['submit'])) {
                     <input type="password" class="form-control" id="password2" name="password2">
                 </div>
             </div>
-            <div class="form-group row justify-content-center">
-                <button id="submit" type="submit" class="btn btn-secondary" name="submit">Register</button>
+            <div class="form-group row justify-content-center ml-2">
+                <button id="submit" type="submit" class="btn btn-secondary col-sm-3" name="submit">Register</button>
             </div>
         </form>
     </div>

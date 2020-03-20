@@ -7,6 +7,64 @@ if (!isset($_SESSION['idUser'])) {
 }
 
 $errors = array();
+$errorsFile = array();
+$select = "SELECT * "
+  . " FROM users WHERE id = '" . $_SESSION['idUser'] . "'";
+$sth = $pdo->prepare($select);
+$sth->execute();
+$users = $sth->fetch(PDO::FETCH_OBJ);
+$sth->closeCursor();
+$sth = null;
+$_SESSION['profile'] = $users->avatar;
+if (isset($_POST['gravatar']) && $_SESSION['profile'] != null) {
+  unlink($_SESSION['profile']);
+  $delete = "UPDATE users SET avatar = NULL";
+  $sth = $pdo->prepare($delete);
+  $sth->execute();
+  $sth->closeCursor();
+  $sth = null;
+  $_SESSION['profile'] = null;
+}
+if (isset($_POST['avatar'])) {
+  $file = $_FILES['imageProfile'];
+  $fileName = $_FILES['imageProfile']['name'];
+  $fileTmpname = $_FILES['imageProfile']['tmp_name'];
+  $fileSize = $_FILES['imageProfile']['size'];
+  $fileError = $_FILES['imageProfile']['error'];
+  $fileType = $_FILES['imageProfile']['type'];
+
+  $fileExt = explode('.', $fileName);
+  $fileActualExt = strtolower(end($fileExt));
+
+  $allowed = array('jpg', 'jpeg', 'png');
+
+  if (!(in_array($fileActualExt, $allowed)) && $fileSize > 0) {
+    array_push($errorsFile, "You must use a jpg, jpeg or png type image");
+  }
+  if (!($fileError === 0) && $fileSize > 0) {
+    array_push($errorsFile, "There was an error downloading the file");
+  }
+  if ($fileSize >= 1000000) {
+    array_push($errorsFile, "Error: file size is greater than 1 MB");
+  }
+  if ($fileSize === 0) {
+    array_push($errorsFile, "You have to upload a file to change your avatar");
+  }
+  if (count($errorsFile) === 0) {
+    $fileNameNew = uniqid('', true) . "." . $fileActualExt;
+    $fileDestination = "uploads/profiles/" . $fileNameNew;
+    if ($_SESSION['profile'] != null) {
+      unlink($_SESSION['profile']);
+    }
+    move_uploaded_file($fileTmpname, $fileDestination);
+    $updatePro = "UPDATE users SET avatar ='" . $fileDestination . "' WHERE id='" . $_SESSION['idUser'] . "'";
+    $sth = $pdo->prepare($updatePro);
+    $sth->execute();
+    $sth->closeCursor();
+    $sth = null;
+    $_SESSION['profile'] = $fileDestination;
+  }
+}
 if (isset($_POST['submit'])) {
   // supprimer espace debut et fin chaine de charactère + empêcher insertion sql dans input
 
@@ -14,6 +72,7 @@ if (isset($_POST['submit'])) {
   $password = trim(addslashes($_POST['new_password']));
   $password2 = trim(addslashes($_POST['confirmer']));
   $signature = trim(addslashes($_POST['signature']));
+
   // Erreurs
   if ($password != $password2) {
     array_push($errors, "Change canceled: the two passwords did not match");
@@ -31,7 +90,7 @@ if (isset($_POST['submit'])) {
     }
   }
   // Modifications des données dans la base de données
-  if (count($errors) == 0) {
+  if (count($errors) === 0) {
     $hash = password_hash($password, PASSWORD_DEFAULT);
     if (empty($password)) {
       $update = "UPDATE users "
@@ -68,12 +127,30 @@ if (isset($_POST['submit'])) {
   ?>
   <h1 class="titre text-center mt-5 pt-5">Profile</h1>
   <div class="bg-light rounded border border-light container">
-    <form action="profile.php" method="post">
+    <form action="profile.php" method="post" enctype="multipart/form-data">
       <div class="d-flex justify-content-center mt-4">
-        <img src="<?php echo $src ?>" class="rounded-circle" />
+        <?php if ($_SESSION['profile'] === NULL) : ?>
+          <img src="<?php echo $src ?>" class="rounded-circle" />
+        <?php else : ?>
+          <img src="<?php echo $_SESSION['profile'] ?>" style="width:120px; height:120px" class="rounded-circle" />
+        <?php endif ?>
       </div>
       <div class="form-group d-flex justify-content-center mt-3 pt-4">
-        <a href="https://fr.gravatar.com/emails/" target="_blank" class="btn btn-secondary">Modify avatar</a>
+        <input type="submit" value="Use Gravatar" name="gravatar" class="btn btn-secondary">
+      </div>
+      <div class="custom-file d-flex justify-content-center">
+        <input type="file" name="imageProfile" class="inputfile" id="inputfile">
+        <input id="buttonfile" type="button" value="Choose an avatar" class="btn btn-primary">
+      </div>
+      <div class="form-group d-flex justify-content-center mt-3">
+        <input type="submit" value="Change avatar" name="avatar" class="btn btn-secondary">
+      </div>
+      <div class="form-group d-flex flex-column mt-3">
+        <?php if (count($errorsFile) > 0) : ?>
+          <?php foreach ($errorsFile as $errorFile) : ?>
+            <?php echo '<p class="error font-weight-bold text-center text-danger mt-O" style="font-size:10px">' . $errorFile . '</p>' ?>
+          <?php endforeach ?>
+        <?php endif ?>
       </div>
       <div class="form-group row mt-5">
         <label for="new_email" class="col-sm-2 col-form-label">Email :</label>

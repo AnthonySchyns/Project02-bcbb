@@ -10,14 +10,17 @@ $(document).ready(function() {
     var b = navbar.height();
 
     currentScrollTop = a;
-    console.log(currentScrollTop);
-    console.log(c);
     if (c < currentScrollTop && a > b + b) {
       navbar.addClass("scrollUp");
     } else if (c > currentScrollTop && !(a <= b)) {
       navbar.removeClass("scrollUp");
     }
     c = currentScrollTop;
-    console.log(c);
   });
 });
+document.getElementById("buttonfile").onclick = function() {
+  document.getElementById("inputfile").click();
+};
+document.getElementById("inputfile").onchange = function() {
+  document.getElementById("buttonfile").value = this.value;
+};
