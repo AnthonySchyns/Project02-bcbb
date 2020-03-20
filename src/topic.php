@@ -200,7 +200,6 @@ $reactions = $sth->fetchAll(PDO::FETCH_OBJ);
 $sth->closeCursor();
 $sth = null;
 
-//var_dump($reactions[0]);
 ?>
 <!DOCTYPE html>
 <html lang="en">
